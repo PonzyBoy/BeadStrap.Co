@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<title>Produk - BeadStrap.Co</title>
+<link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<!-- ================= LOADING ================= -->
+<div id="loader">
+    <div class="loader-box">
+        <div class="spinner"></div>
+        <h2>Memuat Produk BeadStrap.Co 💖</h2>
+    </div>
+</div>
+
+<!-- NAVBAR -->
+<header class="navbar">
+    <div class="logo">
+        <img src="logo.png">
+        <h2>BeadStrap.Co</h2>
+    </div>
+    <nav>
+        <a href="index.html">Home</a>
+        <a href="produk.html">Produk</a>
+        <a href="tentang.html">Tentang</a>
+        <a href="kontak.html">Kontak</a>
+        <a href="login.html">Login 👤</a>
+
+        <!-- KERANJANG -->
+        <a href="keranjang.html" class="cart">
+            🛒 <span id="count" class="badge">0</span>
+        </a>
+    </nav>
+</header>
+
+<!-- PRODUK -->
+<section class="produk">
+    <h2>Koleksi Gelang Lucu 💖</h2>
+
+    <div class="grid">
+
+        <div class="card">
+            <img src="WhatsApp Image 2026-05-05 at 00.11.49.jpeg">
+            <h3>Phone Strap Pink Flower</h3>
+            <p>Rp15.000</p>
+            <a href="detail.html?nama=Gantung Iphone Pink Flower&harga=15000&img=WhatsApp Image 2026-05-05 at 00.11.49.jpeg" class="btn">Detail</a>
+        </div>
+
+        <div class="card">
+            <img src="WhatsApp Image 2026-05-05 at 00..jpeg">
+            <h3>Phone Strap Bear Cute</h3>
+            <p>Rp15.000</p>
+            <a href="detail.html?nama=Gantung Iphone Bear Cute&harga=15000&img=WhatsApp Image 2026-05-05 at 00..jpeg" class="btn">Detail</a>
+        </div>
+
+        <div class="card">
+            <img src="WhatsApp Image 2026-05-05 at 00.11.46.jpeg">
+            <h3>Gelang Ungu Candy</h3>
+            <p>Rp8.000</p>
+            <a href="detail.html?nama=Gelang Ungu Candy&harga=8000&img=WhatsApp Image 2026-05-05 at 00.11.46.jpeg" class="btn">Detail</a>
+        </div>
+
+        <div class="card">
+            <img src="WhatsApp Image 2026-05-05 at 00.11.45.jpeg">
+            <h3>Phone Strap Rainbow</h3>
+            <p>Rp15.000</p>
+            <a href="detail.html?nama=Gantung Iphone Rainbow&harga=15000&img=WhatsApp Image 2026-05-05 at 00.11.45.jpeg" class="btn">Detail</a>
+        </div>
+
+    </div>
+</section>
+
+<!-- CTA -->
+<section class="cta">
+    <h2>Yuk Order Sekarang! 💕</h2>
+    <a href="kontak.html" class="btn">Hubungi Kami</a>
+</section>
+
+<!-- FOOTER -->
+<footer>
+    <p>© 2026 BeadStrapCo - Handmade with Love 💖</p>
+</footer>
+
+<!-- ================= SCRIPT BADGE ================= -->
+<script>
+let cart = JSON.parse(localStorage.getItem("cart")) || [];
+let total = 0;
+
+cart.forEach(i => total += i.jumlah);
+
+document.getElementById("count").innerText = total;
+</script>
+
+<!-- ================= LOADER SCRIPT ================= -->
+<script>
+window.addEventListener("load", function(){
+    const loader = document.getElementById("loader");
+    setTimeout(() => {
+        loader.classList.add("hide");
+    }, 1200);
+});
+</script>
+
+<script>
+// ================= ACTIVE PAGE AUTO =================
+const links = document.querySelectorAll(".menu a");
+const currentPage = window.location.pathname.split("/").pop();
+
+links.forEach(link => {
+    if(link.getAttribute("href") === currentPage){
+        link.classList.add("active");
+    }
+});
+</script>
+
+</body>
+</html>

@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<title>Tentang - BeadStrapCo</title>
+<link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<!-- ================= LOADING ================= -->
+<div id="loader">
+    <div class="loader-box">
+        <div class="spinner"></div>
+        <h2>Memuat Tentang BeadStrap.Co 💖</h2>
+    </div>
+</div>
+
+<div class="parallax"></div>
+
+<header class="navbar">
+    <div class="logo">
+        <img src="logo.jpg">
+        <h2>BeadStrap.Co</h2>
+    </div>
+
+    <nav>
+        <a href="index.html">Home</a>
+        <a href="produk.html">Produk</a>
+        <a href="tentang.html">Tentang</a>
+        <a href="kontak.html">Kontak</a>
+        <a href="login.html">Login 👤</a>
+
+        <!-- KERANJANG -->
+        <a href="keranjang.html" class="cart">
+            🛒 <span id="count" class="badge">0</span>
+        </a>
+    </nav>
+</header>
+
+<section class="tentang">
+    <div class="box tentang-box fade-up">
+
+        <h2>Tentang Kami 💖</h2>
+
+        <p>
+            BeadStrapCo adalah toko gelang handmade yang menghadirkan
+            desain lucu, aesthetic, dan berkualitas tinggi ✨
+        </p>
+
+        <p>
+            Setiap produk dibuat dengan penuh cinta dan detail,
+            cocok untuk kamu yang ingin tampil unik dan stylish 💕
+        </p>
+
+        <div class="tentang-grid">
+            <div>🎀 Handmade Premium</div>
+            <div>💎 Kualitas Terjamin</div>
+            <div>🎁 Cocok untuk Gift</div>
+            <div>🌈 Desain Unik</div>
+        </div>
+
+    </div>
+</section>
+
+<!-- WAVE -->
+<div class="wave"></div>
+
+<!-- ================= PARTIKEL ================= -->
+<script>
+const icons = ["💖","✨","🌸","💎"];
+for(let i=0;i<12;i++){
+    let el = document.createElement("div");
+    el.className = "float-icon";
+    el.innerText = icons[Math.floor(Math.random()*icons.length)];
+    el.style.left = Math.random()*100 + "%";
+    el.style.bottom = "0px";
+    el.style.animationDelay = Math.random()*5 + "s";
+    document.body.appendChild(el);
+}
+</script>
+
+<!-- ================= BADGE KERANJANG ================= -->
+<script>
+let cart = JSON.parse(localStorage.getItem("cart")) || [];
+let total = 0;
+
+cart.forEach(i => total += i.jumlah);
+
+document.getElementById("count").innerText = total;
+</script>
+
+<!-- ================= LOADER SCRIPT ================= -->
+<script>
+window.addEventListener("load", function(){
+    const loader = document.getElementById("loader");
+    setTimeout(() => {
+        loader.classList.add("hide");
+    }, 1200);
+});
+</script>
+
+<script>
+// ================= ACTIVE PAGE AUTO =================
+const links = document.querySelectorAll(".menu a");
+const currentPage = window.location.pathname.split("/").pop();
+
+links.forEach(link => {
+    if(link.getAttribute("href") === currentPage){
+        link.classList.add("active");
+    }
+});
+</script>
+
+</body>
+</html>

@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<title>Akun Saya - BeadStrapCo</title>
+
+<link rel="stylesheet" href="style.css">
+
+<style>
+body{
+    font-family:'Segoe UI',sans-serif;
+    background: linear-gradient(135deg,#ffd6e7,#e0c3fc);
+    margin:0;
+}
+
+.box{
+    max-width:700px;
+    margin:80px auto;
+    background:white;
+    padding:30px;
+    border-radius:20px;
+    box-shadow:0 10px 20px rgba(0,0,0,0.2);
+}
+
+h1{
+    color:#ff69b4;
+    text-align:center;
+}
+
+.card{
+    background:#fff5fb;
+    padding:15px;
+    border-radius:15px;
+    margin-top:15px;
+}
+
+.btn{
+    margin-top:15px;
+    padding:12px;
+    width:100%;
+    border:none;
+    border-radius:25px;
+    background:linear-gradient(45deg,#ff69b4,#a855f7);
+    color:white;
+    font-weight:bold;
+    cursor:pointer;
+}
+
+.btn:hover{
+    transform:scale(1.03);
+}
+</style>
+
+</head>
+
+<body>
+
+<div class="box">
+
+    <h1>👤 Akun Saya</h1>
+
+    <div class="card">
+        <p>Nama User:</p>
+        <h2 id="namaUser"></h2>
+    </div>
+
+    <div class="card">
+        <p>Status:</p>
+        <b>Member BeadStrapCo 💖</b>
+    </div>
+
+    <div class="card">
+        <p>Menu:</p>
+        <ul>
+            <li>🛒 Riwayat Keranjang</li>
+            <li>📦 Pesanan Saya</li>
+            <li>🏠 Alamat</li>
+        </ul>
+    </div>
+
+    <button class="btn" onclick="logout()">Logout</button>
+
+    <button class="btn" onclick="goHome()">Kembali ke Home</button>
+
+</div>
+
+<script>
+// AMBIL USER
+let user = localStorage.getItem("user");
+
+if(!user){
+    window.location.href = "login.html";
+}
+
+document.getElementById("namaUser").innerText = user;
+
+// LOGOUT
+function logout(){
+    localStorage.removeItem("user");
+    window.location.href = "login.html";
+}
+
+// KE HOME
+function goHome(){
+    window.location.href = "index.html";
+}
+</script>
+
+</body>
+</html>

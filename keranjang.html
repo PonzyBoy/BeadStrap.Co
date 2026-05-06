@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<title>Keranjang - BeadStrapCo</title>
+
+<link rel="stylesheet" href="style.css">
+
+<style>
+body{
+    font-family:'Segoe UI',sans-serif;
+    background: linear-gradient(135deg,#ffd6e7,#e0c3fc);
+    margin:0;
+}
+
+/* NAV */
+.navbar{
+    background:white;
+    padding:15px 30px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+}
+
+.navbar a{
+    text-decoration:none;
+    color:#ff69b4;
+    font-weight:bold;
+    margin:0 8px;
+}
+
+/* CONTAINER */
+.container{
+    padding:40px;
+}
+
+/* BOX */
+.box{
+    background:white;
+    padding:30px;
+    border-radius:20px;
+    max-width:800px;
+    margin:auto;
+    box-shadow:0 10px 20px rgba(0,0,0,0.1);
+}
+
+/* ITEM */
+.item{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:15px;
+    border-bottom:1px solid #eee;
+    padding-bottom:10px;
+}
+
+.item-info{
+    display:flex;
+    align-items:center;
+    gap:10px;
+}
+
+.item img{
+    width:50px;
+    height:50px;
+    border-radius:10px;
+    object-fit:cover;
+}
+
+.hapus{
+    color:red;
+    cursor:pointer;
+    font-size:14px;
+}
+
+.total{
+    margin-top:20px;
+    font-size:20px;
+    font-weight:bold;
+    color:#ff69b4;
+}
+
+.payment{
+    margin-top:20px;
+}
+
+.payment label{
+    display:block;
+    margin-bottom:10px;
+}
+
+.btn{
+    margin-top:20px;
+    padding:12px 25px;
+    border:none;
+    border-radius:25px;
+    background:linear-gradient(45deg,#ff69b4,#a855f7);
+    color:white;
+    cursor:pointer;
+    width:100%;
+}
+
+.btn:hover{
+    transform:scale(1.05);
+}
+
+/* LOADER */
+#loader{
+    position: fixed;
+    inset: 0;
+    background: linear-gradient(135deg,#020617,#0f172a);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+    flex-direction: column;
+}
+
+.loader-box{
+    text-align: center;
+    color: white;
+}
+
+.spinner{
+    width: 70px;
+    height: 70px;
+    border: 6px solid rgba(255,255,255,0.2);
+    border-top: 6px solid #ff4fd8;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-bottom: 15px;
+}
+
+@keyframes spin{
+    0%{transform: rotate(0deg);}
+    100%{transform: rotate(360deg);}
+}
+
+#loader.hide{
+    opacity: 0;
+    visibility: hidden;
+    transition: 0.6s ease;
+}
+</style>
+
+</head>
+
+<body>
+
+<!-- LOADER -->
+<div id="loader">
+    <div class="loader-box">
+        <div class="spinner"></div>
+        <h2>Memuat Keranjang BeadStrap.Co 🛍️</h2>
+    </div>
+</div>
+
+<!-- NAV -->
+<div class="navbar">
+    <div>
+        <a href="index.html">Home</a>
+        <a href="produk.html">Produk</a>
+    </div>
+
+    <a href="keranjang.html">
+        🛒 <span id="count">0</span>
+    </a>
+</div>
+
+<!-- CONTENT -->
+<div class="container">
+    <div class="box">
+        <h2>Keranjang Belanja 🛍️</h2>
+
+        <div id="list"></div>
+
+        <div class="total" id="total"></div>
+
+        <div class="payment">
+            <h3>Pilih Pembayaran 💳</h3>
+            <label><input type="radio" name="pay"> OVO</label>
+            <label><input type="radio" name="pay"> DANA</label>
+            <label><input type="radio" name="pay"> GoPay</label>
+            <label><input type="radio" name="pay"> Transfer Bank</label>
+        </div>
+
+        <button class="btn" onclick="bayar()">Bayar Sekarang</button>
+    </div>
+</div>
+
+<script>
+// DATA
+let cart = JSON.parse(localStorage.getItem("cart")) || [];
+
+let list = document.getElementById("list");
+let total = 0;
+
+// BADGE
+function updateBadge(){
+    let totalItem = 0;
+    cart.forEach(i => totalItem += i.jumlah);
+
+    document.getElementById("count").innerText = totalItem;
+}
+
+// TAMPIL
+function tampilkan(){
+    list.innerHTML = "";
+    total = 0;
+
+    if(cart.length === 0){
+        list.innerHTML = "<p>Keranjang masih kosong 😢</p>";
+        document.getElementById("total").innerText = "";
+        updateBadge();
+        return;
+    }
+
+    cart.forEach((item, index)=>{
+        list.innerHTML += `
+        <div class="item">
+            <div class="item-info">
+                <img src="${item.img}">
+                <span>${item.nama} (${item.jumlah}x)</span>
+            </div>
+            <div>
+                <span>Rp ${item.harga * item.jumlah}</span><br>
+                <span class="hapus" onclick="hapus(${index})">Hapus</span>
+            </div>
+        </div>
+        `;
+        total += item.harga * item.jumlah;
+    });
+
+    document.getElementById("total").innerText = "Total: Rp " + total;
+
+    updateBadge();
+}
+
+// HAPUS
+function hapus(index){
+    cart.splice(index,1);
+    localStorage.setItem("cart", JSON.stringify(cart));
+    tampilkan();
+}
+
+// 🔥 BAYAR → LANGSUNG KE CHECKOUT
+function bayar(){
+    if(cart.length === 0){
+        alert("Keranjang kosong!");
+        return;
+    }
+
+    // simpan data untuk checkout
+    localStorage.setItem("checkout", JSON.stringify(cart));
+
+    // pindah ke checkout page
+    window.location.href = "checkout.html";
+}
+
+// LOAD
+tampilkan();
+</script>
+
+<!-- LOADER -->
+<script>
+window.addEventListener("load", function(){
+    const loader = document.getElementById("loader");
+    setTimeout(() => {
+        loader.classList.add("hide");
+    }, 1200);
+});
+</script>
+
+</body>
+</html>

@@ -1,0 +1,631 @@
+/* ================= RESET ================= */
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Segoe UI',sans-serif;
+}
+
+body{
+    background: linear-gradient(135deg,#ffd6e7,#e0c3fc);
+    color:#444;
+    line-height:1.5;
+    overflow-x:hidden;
+}
+
+/* ================= NAVBAR ================= */
+.navbar{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:15px 40px;
+    background:rgba(255,255,255,0.8);
+    backdrop-filter:blur(10px);
+    box-shadow:0 8px 20px rgba(0,0,0,0.1);
+    position:sticky;
+    top:0;
+    z-index:10;
+}
+
+.logo{
+    display:flex;
+    align-items:center;
+    gap:10px;
+}
+
+.logo img{
+    width:50px;
+    border-radius:50%;
+}
+
+nav a{
+    margin:0 10px;
+    text-decoration:none;
+    color:#ff69b4;
+    font-weight:bold;
+    transition:0.3s;
+}
+
+nav a:hover{
+    color:#a855f7;
+    transform:translateY(-2px);
+}
+
+/* ================= BADGE ================= */
+.badge{
+    background:red;
+    color:white;
+    border-radius:50%;
+    padding:3px 7px;
+    font-size:12px;
+    margin-left:5px;
+}
+
+/* ================= HERO ================= */
+.hero{
+    text-align:center;
+    padding:120px 20px 80px;
+    animation:fadeUp 1s ease;
+}
+
+.hero h1{
+    font-size:42px;
+    color:#ff69b4;
+    margin-bottom:15px;
+    text-shadow:0 5px 15px rgba(255,105,180,0.3);
+    animation:floatText 3s ease-in-out infinite;
+}
+
+.subtitle{
+    font-size:18px;
+    color:#a855f7;
+    max-width:600px;
+    margin:0 auto 10px;
+}
+
+.desc{
+    max-width:600px;
+    margin:0 auto 20px;
+    color:#555;
+}
+
+/* ================= BUTTON ================= */
+.btn{
+    display:inline-block;
+    padding:12px 25px;
+    border-radius:30px;
+    text-decoration:none;
+    color:white;
+    background:linear-gradient(45deg,#ff69b4,#a855f7);
+    box-shadow:0 8px 20px rgba(255,105,180,0.3);
+    transition:0.3s;
+    position:relative;
+    overflow:hidden;
+}
+
+.btn:hover{
+    transform:translateY(-3px) scale(1.05);
+    box-shadow:0 12px 25px rgba(0,0,0,0.2);
+}
+
+.btn::after{
+    content:"";
+    position:absolute;
+    width:100%;
+    height:100%;
+    background:rgba(255,255,255,0.3);
+    top:0;
+    left:-100%;
+    transform:skewX(-30deg);
+    transition:0.5s;
+}
+
+.btn:hover::after{
+    left:100%;
+}
+
+/* ================= PRODUK ================= */
+.produk{
+    padding:50px 20px;
+    text-align:center;
+}
+
+.produk h2{
+    color:#ff69b4;
+    margin-bottom:20px;
+}
+
+.grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(230px,1fr));
+    gap:25px;
+    padding:0 20px;
+}
+
+/* ================= CARD ================= */
+.card{
+    background:rgba(255,255,255,0.85);
+    backdrop-filter:blur(10px);
+    padding:20px;
+    border-radius:20px;
+    text-align:center;
+    box-shadow:0 10px 25px rgba(0,0,0,0.1);
+    transition:0.4s;
+    transform-style:preserve-3d;
+}
+
+.card:hover{
+    transform:rotateY(8deg) rotateX(5deg) scale(1.03);
+    box-shadow:
+        0 20px 40px rgba(0,0,0,0.2),
+        0 0 20px rgba(255,105,180,0.4);
+}
+
+.card img{
+    width:100%;
+    height:220px;
+    object-fit:cover;
+    border-radius:15px;
+    margin-bottom:10px;
+    transition:0.4s;
+}
+
+.card:hover img{
+    transform:scale(1.1);
+}
+
+/* ================= DETAIL ================= */
+.detail-container{
+    padding:50px;
+    display:flex;
+    justify-content:center;
+}
+
+.detail-box{
+    display:flex;
+    gap:40px;
+    background:rgba(255,255,255,0.9);
+    backdrop-filter:blur(10px);
+    padding:30px;
+    border-radius:20px;
+    box-shadow:0 15px 30px rgba(0,0,0,0.15);
+    animation:fadeUp 0.8s ease;
+}
+
+.detail-img{
+    width:300px;
+    border-radius:20px;
+}
+
+.detail-info h2{
+    color:#ff69b4;
+}
+
+.detail-btn{
+    display:flex;
+    gap:10px;
+}
+
+/* ================= BOX (GLOBAL) ================= */
+.box{
+    background:rgba(255,255,255,0.9);
+    backdrop-filter:blur(10px);
+    border-radius:20px;
+    box-shadow:0 10px 25px rgba(0,0,0,0.1);
+    transition:0.4s;
+    transform-style:preserve-3d;
+}
+
+.box:hover{
+    transform:rotateY(5deg) rotateX(5deg) scale(1.02);
+    box-shadow:
+        0 20px 40px rgba(0,0,0,0.2),
+        0 0 25px rgba(255,105,180,0.4);
+}
+
+/* ================= TENTANG ================= */
+.tentang{
+    display:flex;
+    justify-content:center;
+    padding:60px 20px;
+}
+
+.tentang-box{
+    max-width:600px;
+    text-align:center;
+}
+
+.tentang-grid{
+    margin-top:20px;
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:10px;
+    font-weight:bold;
+    color:#ff69b4;
+}
+
+/* ================= KONTAK ================= */
+.kontak{
+    display:flex;
+    justify-content:center;
+    padding:60px 20px;
+}
+
+.kontak-box{
+    max-width:600px;
+    width:100%;
+}
+
+.kontak-table{
+    width:100%;
+    margin:20px 0;
+    border-collapse:collapse;
+}
+
+.kontak-table td{
+    padding:8px;
+    border-bottom:1px solid #eee;
+}
+
+/* ================= FORM ================= */
+.form{
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+}
+
+.form input,
+.form textarea{
+    padding:12px;
+    border-radius:10px;
+    border:1px solid #ddd;
+    transition:0.3s;
+}
+
+.form textarea{
+    height:100px;
+}
+
+.form input:focus,
+.form textarea:focus{
+    transform:scale(1.03);
+    box-shadow:0 0 15px rgba(255,105,180,0.4);
+    border-color:#ff69b4;
+}
+
+/* ================= CTA ================= */
+.cta{
+    text-align:center;
+    padding:70px 20px;
+}
+
+.cta h2{
+    color:#ff69b4;
+    margin-bottom:20px;
+}
+
+/* ================= FOOTER ================= */
+footer{
+    text-align:center;
+    padding:20px;
+    background:rgba(255,255,255,0.8);
+    margin-top:30px;
+}
+
+/* ================= ANIMASI ================= */
+@keyframes fadeUp{
+    from{opacity:0; transform:translateY(30px);}
+    to{opacity:1; transform:translateY(0);}
+}
+
+@keyframes floatText{
+    0%,100%{transform:translateY(0);}
+    50%{transform:translateY(-10px);}
+}
+
+/* ================= EFFECT ================= */
+.parallax{
+    position:fixed;
+    width:200%;
+    height:200%;
+    top:-50%;
+    left:-50%;
+    background: radial-gradient(circle, rgba(255,182,193,0.3), transparent 70%);
+    z-index:-2;
+}
+
+.sparkle{
+    position:fixed;
+    width:6px;
+    height:6px;
+    background:white;
+    border-radius:50%;
+    opacity:0.7;
+    animation:twinkle 3s infinite ease-in-out;
+}
+
+@keyframes twinkle{
+    0%,100%{opacity:0;}
+    50%{opacity:1; transform:scale(1.5);}
+}
+
+.float-icon{
+    position:fixed;
+    font-size:20px;
+    opacity:0.5;
+    animation:floatIcon 10s linear infinite;
+    pointer-events:none;
+}
+
+@keyframes floatIcon{
+    0%{transform:translateY(0);}
+    100%{transform:translateY(-300px); opacity:0;}
+}
+
+.wave{
+    position:fixed;
+    width:200%;
+    height:200px;
+    bottom:0;
+    left:0;
+    background:rgba(255,255,255,0.2);
+    border-radius:50%;
+    animation:waveMove 8s infinite linear;
+    z-index:-1;
+}
+
+@keyframes waveMove{
+    from{transform:translateX(0);}
+    to{transform:translateX(-50%);}
+}
+
+/* ================= BUTTERFLY ================= */
+body::before{
+    content:"🦋";
+    position:fixed;
+    font-size:30px;
+    top:80%;
+    left:-50px;
+    animation:flyButterfly 18s linear infinite;
+    opacity:0.6;
+}
+
+@keyframes flyButterfly{
+    0%{transform:translateX(0);}
+    100%{transform:translateX(120vw);}
+}
+
+body::after{
+    content:"";
+    position:fixed;
+    width:300px;
+    height:300px;
+    background:radial-gradient(circle, rgba(255,105,180,0.3), transparent 70%);
+    top:20%;
+    left:10%;
+    filter:blur(60px);
+    z-index:-1;
+}
+
+/* ================= FADE ================= */
+.fade-up{
+    opacity:0;
+    transform:translateY(40px);
+    animation:fadeUp 1s ease forwards;
+}
+
+/* ================= LOADER ================= */
+#loader{
+    position:fixed;
+    width:100%;
+    height:100%;
+    background:linear-gradient(135deg,#ffd6e7,#e0c3fc);
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    z-index:9999;
+    transition:0.5s;
+}
+
+.loader-box{
+    text-align:center;
+}
+
+.spinner{
+    width:50px;
+    height:50px;
+    border:5px solid #fff;
+    border-top:5px solid #ff69b4;
+    border-radius:50%;
+    animation:spin 1s linear infinite;
+    margin:auto;
+}
+
+@keyframes spin{
+    100%{transform:rotate(360deg);}
+}
+
+/* hilangin loader */
+#loader.hide{
+    opacity:0;
+    visibility:hidden;
+}
+
+/* ================= CURSOR GLOW ================= */
+#cursor-glow{
+    position:fixed;
+    width:150px;
+    height:150px;
+    background:radial-gradient(circle, rgba(255,105,180,0.4), transparent 70%);
+    border-radius:50%;
+    pointer-events:none;
+    transform:translate(-50%,-50%);
+    z-index:999;
+    mix-blend-mode:screen;
+    transition:0.1s;
+}
+
+/* ================= EXTRA EFFECT (BIAR LEBIH HIDUP) ================= */
+
+/* glow hover navbar */
+.navbar:hover{
+    box-shadow:0 10px 30px rgba(255,105,180,0.3);
+}
+
+/* animasi masuk produk */
+.card{
+    animation:fadeUp 0.8s ease;
+}
+
+/* hover tombol makin hidup */
+.btn:hover{
+    box-shadow:
+        0 10px 30px rgba(255,105,180,0.4),
+        0 0 20px rgba(168,85,247,0.4);
+}
+
+/* efek halus scroll */
+html{
+    scroll-behavior:smooth;
+}
+
+/* ================= LOADER ================= */
+#loader{
+    position: fixed;
+    inset: 0;
+    background: linear-gradient(135deg,#020617,#0f172a);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+    flex-direction: column;
+}
+
+.loader-box{
+    text-align: center;
+    color: white;
+}
+
+.spinner{
+    width: 70px;
+    height: 70px;
+    border: 6px solid rgba(255,255,255,0.2);
+    border-top: 6px solid #ff4fd8;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-bottom: 15px;
+}
+
+@keyframes spin{
+    0%{transform: rotate(0deg);}
+    100%{transform: rotate(360deg);}
+}
+
+#loader.hide{
+    opacity: 0;
+    visibility: hidden;
+    transition: 0.6s ease;
+}
+
+/* ================= NAVBAR RAPI ================= */
+.navbar{
+    background: white;
+    padding: 15px 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+}
+
+/* LOGO */
+.logo-area h2{
+    color: #ff69b4;
+    margin: 0;
+}
+
+/* MENU */
+.menu{
+    display: flex;
+    gap: 20px;
+    align-items: center;
+}
+
+/* TOMBOL NAV */
+.menu a{
+    text-decoration: none;
+    color: #ff69b4;
+    font-weight: bold;
+    padding: 8px 14px;
+    border-radius: 10px;
+    transition: 0.3s;
+}
+
+/* HOVER */
+.menu a:hover{
+    background: #ff69b4;
+    color: white;
+    transform: translateY(-2px);
+}
+
+/* KERANJANG */
+.cart{
+    background: linear-gradient(45deg,#ff69b4,#a855f7);
+    color: white !important;
+    padding: 8px 14px;
+    border-radius: 20px;
+}
+
+/* ================= ACTIVE NAV ================= */
+.menu a.active{
+    background: #ff69b4;
+    color: white;
+    box-shadow: 0 0 10px rgba(255,105,180,0.6);
+    transform: translateY(-2px);
+}
+
+/* efek glow biar hidup */
+.menu a.active:hover{
+    background: #ff4fa3;
+}
+
+/* ================= NAV UNDERLINE SLIDER ================= */
+.menu{
+    position: relative;
+}
+
+/* link dasar */
+.menu a{
+    position: relative;
+    text-decoration: none;
+    color: #ff69b4;
+    font-weight: bold;
+    padding: 8px 14px;
+    transition: 0.3s;
+}
+
+/* underline tiap item */
+.menu a::after{
+    content: "";
+    position: absolute;
+    left: 50%;
+    bottom: 0;
+    width: 0%;
+    height: 3px;
+    background: #ff69b4;
+    border-radius: 10px;
+    transition: 0.3s ease;
+    transform: translateX(-50%);
+}
+
+/* hover effect */
+.menu a:hover::after{
+    width: 70%;
+}
+
+/* ACTIVE underline lebih tegas */
+.menu a.active::after{
+    width: 90%;
+    background: linear-gradient(45deg,#ff69b4,#a855f7);
+    box-shadow: 0 0 8px rgba(255,105,180,0.6);
+}
+

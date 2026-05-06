@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<title>Detail Produk</title>
+<link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<!-- ================= LOADING ================= -->
+<div id="loader">
+    <div class="loader-box">
+        <div class="spinner"></div>
+        <h2>Memuat Detail Produk BeadStrap.Co 💖</h2>
+    </div>
+</div>
+
+<!-- PARALLAX -->
+<div class="parallax"></div>
+
+<header class="navbar">
+    <div class="logo">
+        <img src="WhatsApp Image 2026-05-04 at 23.45.11.jpeg">
+        <h2>BeadStrap.Co</h2>
+    </div>
+
+    <nav>
+        <a href="index.html">Home</a>
+        <a href="produk.html">Produk</a>
+        <a href="keranjang.html">
+        <a href="login.html">Login 👤</a>
+            🛒 <span id="count" class="badge">0</span>
+        </a>
+    </nav>
+</header>
+
+<section class="detail-container">
+
+    <div class="detail-box">
+
+        <img id="gambar" src="" class="detail-img">
+
+        <div class="detail-info">
+            <h2 id="nama"></h2>
+            <h3 id="harga"></h3>
+
+            <p>✨ Handmade Premium<br>
+               💪 Kuat & Tidak Mudah Putus<br>
+               🎁 Cocok untuk hadiah</p>
+
+            <label>Jumlah:</label>
+            <input type="number" id="qty" value="1" min="1">
+
+            <div class="detail-btn">
+                <button class="btn" onclick="tambahKeranjang()">+ Keranjang</button>
+                <button class="btn beli" onclick="beli()">Beli Sekarang</button>
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+<!-- ================= SCRIPT ================= -->
+<script>
+// AMBIL DATA
+const url = new URLSearchParams(window.location.search);
+const nama = url.get('nama');
+const harga = parseInt(url.get('harga'));
+const img = url.get('img');
+
+// TAMPILKAN
+document.getElementById("nama").innerText = nama;
+document.getElementById("harga").innerText = "Rp" + harga;
+document.getElementById("gambar").src = img;
+
+// BADGE
+function updateBadge(){
+    let cart = JSON.parse(localStorage.getItem("cart")) || [];
+    let total = 0;
+    cart.forEach(i => total += i.jumlah);
+
+    let el = document.getElementById("count");
+    if(el) el.innerText = total;
+}
+updateBadge();
+
+// KERANJANG
+function tambahKeranjang(){
+    let jumlah = parseInt(document.getElementById("qty").value);
+
+    let item = {
+        nama: nama,
+        harga: harga,
+        jumlah: jumlah,
+        img: img
+    };
+
+    let cart = JSON.parse(localStorage.getItem("cart")) || [];
+    let existing = cart.find(i => i.nama === nama);
+
+    if(existing){
+        existing.jumlah += jumlah;
+    }else{
+        cart.push(item);
+    }
+
+    localStorage.setItem("cart", JSON.stringify(cart));
+    updateBadge();
+
+    let imgEl = document.getElementById("gambar");
+    let rect = imgEl.getBoundingClientRect();
+
+    let fly = document.createElement("img");
+    fly.src = img;
+    fly.className = "fly";
+    fly.style.left = rect.left + "px";
+    fly.style.top = rect.top + "px";
+
+    document.body.appendChild(fly);
+
+    setTimeout(()=>{
+        fly.style.left = window.innerWidth - 60 + "px";
+        fly.style.top = "20px";
+        fly.style.opacity = "0";
+    },10);
+
+    setTimeout(()=>{
+        fly.remove();
+        alert("Ditambahkan ke keranjang 🛒");
+    },1000);
+}
+
+// BELI
+function beli(){
+    let jumlah = document.getElementById("qty").value;
+
+    let pesan = `Halo kak, saya mau beli:
+${nama}
+Jumlah: ${jumlah}
+Harga: Rp${harga}`;
+
+    window.open(`https://wa.me/6283143168775?text=${encodeURIComponent(pesan)}`);
+}
+
+// PARALLAX
+document.addEventListener("mousemove",(e)=>{
+    let x=(e.clientX/window.innerWidth-0.5)*30;
+    let y=(e.clientY/window.innerHeight-0.5)*30;
+    document.querySelector(".parallax").style.transform =
+        `translate(${x}px, ${y}px)`;
+});
+</script>
+
+<!-- ================= LOADER SCRIPT ================= -->
+<script>
+window.addEventListener("load", function(){
+    const loader = document.getElementById("loader");
+    setTimeout(() => {
+        loader.classList.add("hide");
+    }, 1200);
+});
+</script>
+
+<script>
+// ================= ACTIVE PAGE AUTO =================
+const links = document.querySelectorAll(".menu a");
+const currentPage = window.location.pathname.split("/").pop();
+
+links.forEach(link => {
+    if(link.getAttribute("href") === currentPage){
+        link.classList.add("active");
+    }
+});
+</script>
+
+</body>
+</html>

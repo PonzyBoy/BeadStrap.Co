@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<title>BeadStrapCo</title>
+<link rel="stylesheet" href="style.css">
+
+<style>
+/* ===== DROPDOWN AKUN ===== */
+.akun-dropdown{
+    position: relative;
+    display: inline-block;
+}
+
+.akun-btn{
+    background: none;
+    border: none;
+    color: #ff69b4;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.akun-menu{
+    display: none;
+    position: absolute;
+    right: 0;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+    overflow: hidden;
+    min-width: 150px;
+    z-index: 99;
+}
+
+.akun-menu a{
+    display: block;
+    padding: 10px;
+    text-decoration: none;
+    color: #333;
+}
+
+.akun-menu a:hover{
+    background: #ffe4f2;
+}
+
+.akun-dropdown:hover .akun-menu{
+    display: block;
+}
+</style>
+
+</head>
+
+<body>
+
+<!-- ================= LOADER ================= -->
+<div id="loader">
+    <div class="loader-box">
+        <div class="spinner"></div>
+        <h2>BeadStrap.Co 💖</h2>
+    </div>
+</div>
+
+<!-- PARALLAX -->
+<div class="parallax"></div>
+
+<!-- NAVBAR -->
+<header class="navbar">
+    <div class="logo">
+        <img src="logo.jpg">
+        <h2>BeadStrap.Co</h2>
+    </div>
+
+    <nav id="nav">
+        <a href="index.html">Home</a>
+        <a href="produk.html">Produk</a>
+        <a href="tentang.html">Tentang</a>
+        <a href="kontak.html">Kontak</a>
+        <!-- AUTO JS -->
+    </nav>
+</header>
+
+<!-- HERO -->
+<section class="hero">
+    <h1>Selamat Datang di BeadStrapCo 💖</h1>
+    <p class="subtitle">Toko gelang handmade aesthetic ✨</p>
+    <a href="produk.html" class="btn">Lihat Produk</a>
+</section>
+
+<!-- PRODUK -->
+<section class="produk">
+    <h2>Produk Terbaru</h2>
+
+    <div class="grid">
+        <div class="card">
+            <img src="WhatsApp Image 2026-05-06 at 21.16.41.jpeg">
+            <h3>Phone Strap Pink Flower</h3>
+            <p>Rp15.000</p>
+            <a href="detail.html?nama=Phone Strap Pink Flower&harga=15000&img=WhatsApp Image 2026-05-05 at 00.11.49.jpeg" class="btn">Detail</a>
+        </div>
+
+        <div class="card">
+            <img src="WhatsApp Image 2026-05-06 at 21.16.40.jpeg">
+            <h3>Gelang Bear Cute</h3>
+            <p>Rp8.000</p>
+            <a href="detail.html?nama=Gelang Bear Cute&harga=8000&img=WhatsApp Image 2026-05-05 at 00.11.46.jpeg" class="btn">Detail</a>
+        </div>
+    </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+    <p>© 2026 BeadStrapCo 💕</p>
+</footer>
+
+<!-- ================= SCRIPT ================= -->
+<script>
+
+// LOADER
+window.addEventListener("load", ()=>{
+    document.getElementById("loader").style.display = "none";
+});
+
+// PARALLAX
+document.addEventListener("mousemove",(e)=>{
+    let x=(e.clientX/window.innerWidth-0.5)*30;
+    let y=(e.clientY/window.innerHeight-0.5)*30;
+    document.querySelector(".parallax").style.transform =
+        `translate(${x}px, ${y}px)`;
+});
+
+// ================= LOGIN NAVBAR DROPDOWN =================
+let user = localStorage.getItem("user");
+let nav = document.getElementById("nav");
+
+// isi navbar tambahan
+let extra = "";
+
+// keranjang
+extra += `
+<a href="keranjang.html">
+ 🛒 <span id="count" class="badge">0</span>
+</a>`;
+
+// kalau login
+if(user){
+    extra += `
+    <div class="akun-dropdown">
+        <button class="akun-btn">👤 ${user} ▼</button>
+        <div class="akun-menu">
+            <a href="dashboard.html">Akun Saya</a>
+            <a href="#" onclick="logout()">Logout</a>
+        </div>
+    </div>
+    `;
+}
+else{
+    extra += `<a href="login.html">Login 👤</a>`;
+}
+
+// inject
+nav.innerHTML += extra;
+
+// logout
+function logout(){
+    localStorage.removeItem("user");
+    location.reload();
+}
+
+// ================= KERANJANG =================
+let cart = JSON.parse(localStorage.getItem("cart")) || [];
+let total = 0;
+cart.forEach(i => total += i.jumlah);
+
+document.getElementById("count").innerText = total;
+
+</script>
+
+</body>
+</html>

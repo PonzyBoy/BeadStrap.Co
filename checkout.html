@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<title>Checkout - BeadStrapCo</title>
+<link rel="stylesheet" href="style.css">
+
+<style>
+body{
+    font-family:'Segoe UI',sans-serif;
+    background: linear-gradient(135deg,#ffd6e7,#e0c3fc);
+    margin:0;
+}
+
+.container{
+    padding:40px;
+}
+
+.box{
+    background:white;
+    max-width:750px;
+    margin:auto;
+    padding:30px;
+    border-radius:20px;
+    box-shadow:0 10px 20px rgba(0,0,0,0.1);
+}
+
+/* ITEM */
+.item{
+    display:flex;
+    justify-content:space-between;
+    padding:8px 0;
+    border-bottom:1px solid #eee;
+}
+
+/* FORM */
+input, select{
+    width:100%;
+    padding:10px;
+    margin-top:10px;
+    border-radius:10px;
+    border:1px solid #ddd;
+}
+
+/* TOTAL */
+.total{
+    margin-top:20px;
+    font-size:18px;
+    font-weight:bold;
+    color:#ff69b4;
+    white-space:pre-line;
+}
+
+/* BUTTON */
+.btn{
+    margin-top:20px;
+    width:100%;
+    padding:12px;
+    border:none;
+    border-radius:25px;
+    background:linear-gradient(45deg,#ff69b4,#a855f7);
+    color:white;
+    font-weight:bold;
+    cursor:pointer;
+}
+
+.btn:hover{
+    transform:scale(1.03);
+}
+
+/* INVOICE */
+.invoice{
+    font-size:14px;
+    color:#666;
+    margin-bottom:15px;
+}
+
+/* BOX TAMBAHAN */
+.section{
+    margin-top:15px;
+}
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+    <div class="box">
+
+        <h2>Checkout 🧾</h2>
+
+        <div class="invoice" id="invoice"></div>
+
+        <!-- FORM CUSTOMER -->
+        <input type="text" id="nama" placeholder="Nama Lengkap">
+        <input type="text" id="nohp" placeholder="No WhatsApp">
+        <input type="text" id="alamat" placeholder="Alamat Lengkap">
+
+        <!-- ONGKIR -->
+        <div class="section">
+            <h4>Ongkir 🚚</h4>
+            <select id="ongkir" onchange="hitungTotal()">
+                <option value="0">Ambil di tempat (Gratis)</option>
+                <option value="10000">Mataram (Rp10.000)</option>
+                <option value="20000">Luar Mataram (Rp20.000)</option>
+            </select>
+        </div>
+
+        <!-- PROMO -->
+        <div class="section">
+            <h4>Promo 🎁</h4>
+            <input type="text" id="promo" placeholder="Masukkan kode PROMO10">
+            <button class="btn" style="margin-top:10px" onclick="applyPromo()">Pakai Promo</button>
+        </div>
+
+        <hr>
+
+        <div id="list"></div>
+
+        <div class="total" id="total"></div>
+
+        <button class="btn" onclick="checkoutWA()">
+            Kirim Pesanan ke WhatsApp 💬
+        </button>
+
+    </div>
+</div>
+
+<script>
+// ================= DATA =================
+// ambil dari cart (lebih aman)
+let cart = JSON.parse(localStorage.getItem("checkout")) 
+        || JSON.parse(localStorage.getItem("cart")) 
+        || [];
+
+let list = document.getElementById("list");
+let total = 0;
+
+let ongkir = 0;
+let diskon = 0;
+
+// ================= AUTO ISI USER =================
+let user = localStorage.getItem("user");
+if(user){
+    document.getElementById("nama").value = user;
+}
+
+// ================= VALIDASI CART =================
+if(cart.length === 0){
+    alert("Keranjang kosong!");
+    window.location.href = "produk.html";
+}
+
+// ================= INVOICE =================
+let invoice = "INV-" + Math.floor(Math.random()*90000 + 10000);
+document.getElementById("invoice").innerText = "No Invoice: " + invoice;
+
+// ================= TAMPIL =================
+function tampilkan(){
+    list.innerHTML = "";
+    total = 0;
+
+    cart.forEach(item=>{
+        list.innerHTML += `
+        <div class="item">
+            <div>${item.nama} (${item.jumlah}x)</div>
+            <div>Rp ${item.harga * item.jumlah}</div>
+        </div>
+        `;
+        total += item.harga * item.jumlah;
+    });
+
+    hitungTotal();
+}
+
+// ================= HITUNG TOTAL =================
+function hitungTotal(){
+    let diskonRp = total * diskon;
+    let grandTotal = total - diskonRp + ongkir;
+
+    document.getElementById("total").innerText =
+`Subtotal: Rp ${total}
+Diskon: Rp ${diskonRp}
+Ongkir: Rp ${ongkir}
+TOTAL BAYAR: Rp ${grandTotal}`;
+}
+
+// ================= ONGKIR =================
+document.getElementById("ongkir").addEventListener("change", function(){
+    ongkir = parseInt(this.value);
+    hitungTotal();
+});
+
+// ================= PROMO =================
+function applyPromo(){
+    let kode = document.getElementById("promo").value;
+
+    if(kode === "PROMO10"){
+        diskon = 0.1;
+        alert("Promo 10% aktif!");
+    } else {
+        diskon = 0;
+        alert("Kode tidak valid!");
+    }
+
+    hitungTotal();
+}
+
+// ================= WHATSAPP ORDER =================
+function checkoutWA(){
+    let nama = document.getElementById("nama").value;
+    let nohp = document.getElementById("nohp").value;
+    let alamat = document.getElementById("alamat").value;
+
+    if(!nama || !nohp || !alamat){
+        alert("Lengkapi data dulu!");
+        return;
+    }
+
+    let diskonRp = total * diskon;
+    let grandTotal = total - diskonRp + ongkir;
+
+    let pesan = `🧾 *ORDER BEADSTRAP.CO*\n\n`;
+    pesan += `Invoice: ${invoice}\n`;
+    pesan += `Nama: ${nama}\n`;
+    pesan += `No HP: ${nohp}\n`;
+    pesan += `Alamat: ${alamat}\n\n`;
+    pesan += `🛍️ Pesanan:\n`;
+
+    cart.forEach(i=>{
+        pesan += `- ${i.nama} (${i.jumlah}x) = Rp ${i.harga * i.jumlah}\n`;
+    });
+
+    pesan += `\nSubtotal: Rp ${total}`;
+    pesan += `\nDiskon: Rp ${diskonRp}`;
+    pesan += `\nOngkir: Rp ${ongkir}`;
+    pesan += `\nTOTAL: Rp ${grandTotal}`;
+
+    window.open(`https://wa.me/6283143168775?text=${encodeURIComponent(pesan)}`);
+
+    localStorage.removeItem("cart");
+    localStorage.removeItem("checkout");
+}
+
+tampilkan();
+</script>
+
+</body>
+</html>
