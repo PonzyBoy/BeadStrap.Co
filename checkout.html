@@ -237,13 +237,33 @@ function checkoutWA(){
     pesan += `\nOngkir: Rp ${ongkir}`;
     pesan += `\nTOTAL: Rp ${grandTotal}`;
 
-    window.open(`https://wa.me/6283143168775?text=${encodeURIComponent(pesan)}`);
+    // SIMPAN KE ADMIN
+    let orders = JSON.parse(localStorage.getItem("orders")) || [];
 
+    orders.push({
+        invoice: invoice,
+        nama: nama,
+        nohp: nohp,
+        alamat: alamat,
+        total: grandTotal,
+        tanggal: new Date().toLocaleString("id-ID")
+    });
+
+    localStorage.setItem("orders", JSON.stringify(orders));
+
+    // KIRIM WA
+    window.open(
+        `https://wa.me/6283143168775?text=${encodeURIComponent(pesan)}`
+    );
+
+    // BERSIHKAN KERANJANG
     localStorage.removeItem("cart");
     localStorage.removeItem("checkout");
-}
 
-tampilkan();
+    alert("Pesanan berhasil dikirim!");
+
+    window.location.href = "index.html";
+}
 </script>
 
 </body>

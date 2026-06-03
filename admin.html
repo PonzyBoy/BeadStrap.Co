@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin Dashboard - BeadStrapCo</title>
+
+<style>
+body{
+    margin:0;
+    font-family:'Segoe UI',sans-serif;
+    background:linear-gradient(135deg,#ffd6e7,#e0c3fc);
+}
+
+.header{
+    background:white;
+    padding:20px;
+    text-align:center;
+    box-shadow:0 5px 15px rgba(0,0,0,.1);
+}
+
+.header h1{
+    color:#ff69b4;
+}
+
+.container{
+    padding:30px;
+}
+
+.card{
+    background:white;
+    padding:20px;
+    border-radius:20px;
+    margin-bottom:20px;
+    box-shadow:0 5px 15px rgba(0,0,0,.1);
+}
+
+.btn{
+    background:#ff69b4;
+    color:white;
+    border:none;
+    padding:10px 20px;
+    border-radius:10px;
+    cursor:pointer;
+}
+
+.btn:hover{
+    opacity:.9;
+}
+
+table{
+    width:100%;
+    border-collapse:collapse;
+}
+
+table th,
+table td{
+    padding:12px;
+    border-bottom:1px solid #eee;
+    text-align:left;
+}
+
+th{
+    background:#ff69b4;
+    color:white;
+}
+</style>
+
+</head>
+<body>
+
+<div class="header">
+    <h1>👑 Dashboard Admin</h1>
+</div>
+
+<div class="container">
+
+    <div class="card">
+        <h2>Total Pesanan</h2>
+        <h1 id="jumlahPesanan">0</h1>
+    </div>
+
+    <div class="card">
+        <h2>Data Pesanan</h2>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Invoice</th>
+                    <th>Nama</th>
+                    <th>No HP</th>
+                    <th>Total</th>
+                </tr>
+            </thead>
+
+            <tbody id="dataPesanan">
+            </tbody>
+
+        </table>
+    </div>
+
+    <div class="card">
+        <button class="btn" onclick="hapusSemua()">
+            Hapus Semua Pesanan
+        </button>
+    </div>
+
+</div>
+
+<script>
+
+let orders =
+JSON.parse(localStorage.getItem("orders")) || [];
+
+document.getElementById("jumlahPesanan").innerText =
+orders.length;
+
+let html = "";
+
+orders.forEach(order=>{
+
+html += `
+<tr>
+<td>${order.invoice}</td>
+<td>${order.nama}</td>
+<td>${order.nohp}</td>
+<td>Rp ${order.total}</td>
+</tr>
+`;
+
+});
+
+document.getElementById("dataPesanan").innerHTML = html;
+
+function hapusSemua(){
+
+if(confirm("Hapus semua pesanan?")){
+
+localStorage.removeItem("orders");
+
+location.reload();
+
+}
+
+}
+</script>
+
+</body>
+</html>
