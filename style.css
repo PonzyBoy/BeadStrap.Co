@@ -741,3 +741,66 @@ body:hover #cursor-glow{
         fadeUp .8s ease,
         floatingCard 5s ease-in-out infinite;
 }
+
+/* ================= LOADER ================= */
+#loader{
+    position:fixed;
+    inset:0;
+    background:linear-gradient(135deg,#ffd6e7,#e0c3fc);
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    z-index:9999;
+    transition:.6s;
+}
+
+.loader-box{
+    text-align:center;
+}
+
+.loader-box h2{
+    color:#ff69b4;
+    margin-top:15px;
+}
+
+.spinner{
+    width:70px;
+    height:70px;
+    border:6px solid rgba(255,255,255,.5);
+    border-top:6px solid #ff69b4;
+    border-radius:50%;
+    animation:spin 1s linear infinite;
+}
+
+@keyframes spin{
+    100%{
+        transform:rotate(360deg);
+    }
+}
+
+#loader.hide{
+    opacity:0;
+    visibility:hidden;
+}
+
+/* ANIMASI BOX */
+.box{
+    animation:fadeUp .8s ease;
+    transition:.4s;
+}
+
+.box:hover{
+    transform:translateY(-5px) scale(1.01);
+    box-shadow:0 20px 40px rgba(255,105,180,.2);
+}
+
+@keyframes fadeUp{
+    from{
+        opacity:0;
+        transform:translateY(30px);
+    }
+    to{
+        opacity:1;
+        transform:translateY(0);
+    }
+}

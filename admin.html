@@ -12,6 +12,47 @@ body{
     background:linear-gradient(135deg,#ffd6e7,#e0c3fc);
 }
 
+/* LOADER */
+#loader{
+    position:fixed;
+    inset:0;
+    background:linear-gradient(135deg,#ffd6e7,#e0c3fc);
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    z-index:9999;
+}
+
+.loader-box{
+    text-align:center;
+}
+
+.loader-box h2{
+    color:#ff69b4;
+    margin-top:15px;
+}
+
+.spinner{
+    width:70px;
+    height:70px;
+    border:6px solid rgba(255,255,255,.5);
+    border-top:6px solid #ff69b4;
+    border-radius:50%;
+    animation:spin 1s linear infinite;
+}
+
+@keyframes spin{
+    100%{
+        transform:rotate(360deg);
+    }
+}
+
+#loader.hide{
+    opacity:0;
+    visibility:hidden;
+    transition:.6s;
+}
+
 .header{
     background:white;
     padding:20px;
@@ -33,6 +74,11 @@ body{
     border-radius:20px;
     margin-bottom:20px;
     box-shadow:0 5px 15px rgba(0,0,0,.1);
+    transition:.3s;
+}
+
+.card:hover{
+    transform:translateY(-5px);
 }
 
 .btn{
@@ -69,7 +115,15 @@ th{
 </head>
 <body>
 
-<<div class="header">
+<!-- LOADER -->
+<div id="loader">
+    <div class="loader-box">
+        <div class="spinner"></div>
+        <h2>BeadStrapCo Admin 👑</h2>
+    </div>
+</div>
+
+<div class="header">
     <h1>👑 Dashboard Admin</h1>
 
     <button class="btn" onclick="logoutAdmin()">
@@ -112,6 +166,18 @@ th{
 </div>
 
 <script>
+
+// LOADER
+window.addEventListener("load", ()=>{
+
+setTimeout(()=>{
+
+document.getElementById("loader")
+.classList.add("hide");
+
+},800);
+
+});
 
 // ================= CEK LOGIN ADMIN =================
 if(localStorage.getItem("admin") !== "true"){
@@ -170,3 +236,6 @@ window.location.href = "login.html";
 
 }
 </script>
+
+</body>
+</html>
