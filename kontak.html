@@ -4,11 +4,26 @@
 <meta charset="UTF-8">
 <title>Kontak - BeadStrapCo</title>
 <link rel="stylesheet" href="style.css">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght=300;400;600;700&display=swap" rel="stylesheet">
+
+<style>
+/* Sedikit tambahan style pembantu agar link tabel terlihat cantik */
+body {
+    font-family: 'Poppins', sans-serif;
+}
+.kontak-table a {
+    color: #ff69b4;
+    text-decoration: none;
+    font-weight: 600;
+}
+.kontak-table a:hover {
+    text-decoration: underline;
+}
+</style>
 </head>
 
 <body>
 
-<!-- ================= LOADING ================= -->
 <div id="loader">
     <div class="loader-box">
         <div class="spinner"></div>
@@ -24,14 +39,12 @@
         <h2>BeadStrap.Co</h2>
     </div>
 
-    <nav>
+    <nav id="nav">
         <a href="index.html">Home</a>
         <a href="produk.html">Produk</a>
-        <a href="tentang.html">Tentang</a>
         <a href="kontak.html">Kontak</a>
         <a href="login.html">Login 👤</a>
 
-        <!-- KERANJANG -->
         <a href="keranjang.html" class="cart">
             🛒 <span id="count" class="badge">0</span>
         </a>
@@ -43,29 +56,37 @@
 
         <h2>Hubungi Kami 📞</h2>
 
-        <!-- TABEL -->
         <table class="kontak-table">
-            <tr><td>WhatsApp</td><td>: 0831-4316-8775</td></tr>
-            <tr><td>Instagram</td><td>: @beadstrapco</td></tr>
-            <tr><td>Email</td><td>: beadstrap@gmail.com</td></tr>
-            <tr><td>Alamat</td><td>: Nusa Tenggara Barat, Mataram</td></tr>
+            <tr>
+                <td>WhatsApp</td>
+                <td>: <a href="https://wa.me/6283143168775" target="_blank">0831-4316-8775</a></td>
+            </tr>
+            <tr>
+                <td>Instagram</td>
+                <td>: <a href="https://instagram.com/beadstrapco" target="_blank">@beadstrapco</a></td>
+            </tr>
+            <tr>
+                <td>Email</td>
+                <td>: <a href="mailto:beadstrap@gmail.com">beadstrap@gmail.com</a></td>
+            </tr>
+            <tr>
+                <td>Alamat</td>
+                <td>: Nusa Tenggara Barat, Mataram</td>
+            </tr>
         </table>
 
-        <!-- FORM -->
-        <form class="form">
-            <input type="text" placeholder="Nama">
-            <input type="email" placeholder="Email">
-            <textarea placeholder="Pesan"></textarea>
-            <button class="btn">Kirim</button>
+        <form class="form" id="form-kontak" onsubmit="kirimPesanKontak(event)">
+            <input type="text" id="kontak-nama" placeholder="Nama" required>
+            <input type="email" id="kontak-email" placeholder="Email" required>
+            <textarea id="kontak-pesan" placeholder="Pesan" required></textarea>
+            <button type="submit" class="btn">Kirim Pesan 🚀</button>
         </form>
 
     </div>
 </section>
 
-<!-- WAVE -->
 <div class="wave"></div>
 
-<!-- ================= PARTIKEL ================= -->
 <script>
 const icons = ["💖","✨","🌸","💎"];
 for(let i=0;i<12;i++){
@@ -79,29 +100,62 @@ for(let i=0;i<12;i++){
 }
 </script>
 
-<!-- ================= BADGE KERANJANG ================= -->
+<script>
+function kirimPesanKontak(event) {
+    // Mencegah halaman reload saat form di-submit
+    event.preventDefault(); 
+
+    // Mengambil data inputan pengguna
+    const nama = document.getElementById("kontak-nama").value.trim();
+    const email = document.getElementById("kontak-email").value.trim();
+    const pesan = document.getElementById("kontak-pesan").value.trim();
+
+    if(!nama || !email || !pesan) {
+        alert("Mohon lengkapi semua kolom form terlebih dahulu!");
+        return;
+    }
+
+    // OPSI 1: Diarahkan langsung ke WhatsApp Admin (Paling Direkomendasikan untuk web statis)
+    const nomorWA = "6283143168775"; // Format kode negara tanpa tanda '+'
+    const teksPesan = `Halo BeadStrapCo! ✨\n\n` +
+                      `Nama: ${nama}\n` +
+                      `Email: ${email}\n` +
+                      `Pesan: ${pesan}`;
+                      
+    const urlWhatsApp = `https://wa.me/${nomorWA}?text=${encodeURIComponent(teksPesan)}`;
+    
+    // Buka tautan WhatsApp di tab baru
+    window.open(urlWhatsApp, '_blank');
+
+    // Reset formulir setelah pengiriman berhasil
+    document.getElementById("form-kontak").reset();
+    alert(`Terima kasih ${nama}! Pesanan/pesan Anda diteruskan ke WhatsApp Admin. 💕`);
+}
+</script>
+
 <script>
 let cart = JSON.parse(localStorage.getItem("cart")) || [];
 let total = 0;
 
 cart.forEach(i => total += i.jumlah);
-
 document.getElementById("count").innerText = total;
 </script>
 
-<!-- ================= LOADER SCRIPT ================= -->
 <script>
 window.addEventListener("load", function(){
     const loader = document.getElementById("loader");
     setTimeout(() => {
-        loader.classList.add("hide");
+        // Menggunakan display none bawaan agar sinkron jika class 'hide' belum ter-style di CSS Anda
+        loader.style.display = "none"; 
     }, 1200);
 });
 </script>
+
 <script>
 // ================= ACTIVE PAGE AUTO =================
-const links = document.querySelectorAll(".menu a");
-const currentPage = window.location.pathname.split("/").pop();
+// Perbaikan selektor dari ".menu a" menjadi "nav a" agar sesuai dengan struktur HTML navbar Anda
+const links = document.querySelectorAll("nav a");
+const currentPage = window.location.pathname.split("/").pop() || "index.html";
 
 links.forEach(link => {
     if(link.getAttribute("href") === currentPage){

@@ -2,16 +2,29 @@
 <html lang="id">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>BeadStrapCo</title>
 <link rel="stylesheet" href="style.css">
 
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght=300;400;600;700&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+
+<script type="text/javascript"
+  src="https://app.sandbox.midtrans.com/snap/snap.js"
+  data-client-key="MASUKKAN_CLIENT_KEY_SANDBOX_MIDTRANS_ANDA"></script>
+
 <style>
+/* Universal Font */
+body, button, input, textarea, a, select {
+    font-family: 'Poppins', sans-serif;
+}
+
 /* ===== DROPDOWN AKUN ===== */
 .akun-dropdown{
     position: relative;
     display: inline-block;
 }
-
 .akun-btn{
     background: none;
     border: none;
@@ -19,7 +32,6 @@
     font-weight: bold;
     cursor: pointer;
 }
-
 .akun-menu{
     display: none;
     position: absolute;
@@ -31,28 +43,347 @@
     min-width: 150px;
     z-index: 99;
 }
-
 .akun-menu a{
     display: block;
     padding: 10px;
     text-decoration: none;
     color: #333;
 }
-
 .akun-menu a:hover{
     background: #ffe4f2;
 }
-
 .akun-dropdown:hover .akun-menu{
     display: block;
 }
-</style>
 
+/* ===== SIDEBAR KERANJANG GABUNGAN ===== */
+.cart-sidebar {
+    position: fixed;
+    top: 0;
+    right: -460px;
+    width: 420px;
+    height: 100%;
+    background-color: #f5f5f5;
+    box-shadow: -5px 0 15px rgba(0,0,0,0.15);
+    transition: right 0.3s ease;
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+}
+.cart-sidebar.active {
+    right: 0;
+}
+.cart-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: white;
+    padding: 20px;
+    border-bottom: 2px solid #ff69b4;
+}
+.cart-header h3 {
+    margin: 0;
+    color: #ff69b4;
+    font-size: 18px;
+}
+.close-cart {
+    font-size: 28px;
+    cursor: pointer;
+    color: #aaa;
+}
+.cart-body-scroll {
+    flex: 1;
+    overflow-y: auto;
+    padding: 12px;
+}
+
+/* Kotak Kontainer Seksi ala Shopee Card */
+.shopee-card {
+    background: white;
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 12px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+}
+.shopee-card h4 {
+    margin: 0 0 12px 0;
+    color: #333;
+    font-size: 14px;
+    border-left: 3px solid #ff69b4;
+    padding-left: 8px;
+}
+.cart-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0;
+    border-bottom: 1px solid #f2f2f2;
+    font-size: 14px;
+}
+.cart-item:last-child {
+    border-bottom: none;
+}
+
+/* Gaya Tombol Manipulasi Keranjang */
+.cart-item-right {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+.btn-hapus-item {
+    background: none;
+    border: none;
+    color: #ff4d4d;
+    cursor: pointer;
+    font-size: 16px;
+    padding: 4px;
+    border-radius: 4px;
+    transition: background 0.2s;
+}
+.btn-hapus-item:hover {
+    background: #fff0f0;
+}
+.btn-kosongkan-cart {
+    background: #fff0f0;
+    color: #ff4d4d;
+    border: 1px solid #ffcccc;
+    padding: 6px 12px;
+    font-size: 11px;
+    font-weight: bold;
+    border-radius: 6px;
+    cursor: pointer;
+    float: right;
+    margin-top: -6px;
+    transition: all 0.2s;
+}
+.btn-kosongkan-cart:hover {
+    background: #ff4d4d;
+    color: white;
+    border-color: #ff4d4d;
+}
+
+/* ===== FORM ALAMAT PENGIRIMAN ===== */
+.form-group {
+    margin-bottom: 10px;
+}
+.form-group input, .form-group textarea, .form-group select {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 13px;
+    box-sizing: border-box;
+    background: #fafafa;
+}
+.form-group textarea {
+    resize: none;
+    height: 60px;
+}
+.form-group input:focus, .form-group textarea:focus, .form-group select:focus {
+    border-color: #ff69b4;
+    background: white;
+    outline: none;
+}
+
+/* Wadah untuk elemen Peta Visual */
+#map-container {
+    width: 100%;
+    height: 180px;
+    border-radius: 6px;
+    border: 1px solid #ddd;
+    margin-top: 5px;
+    margin-bottom: 5px;
+    z-index: 1;
+}
+.map-hint {
+    font-size: 11px;
+    color: #777;
+    margin-bottom: 12px;
+    display: block;
+    font-style: italic;
+}
+
+/* ===== METODE PEMBAYARAN DETAIL ===== */
+.payment-options {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+.payment-option-container {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    overflow: hidden;
+    background: white;
+    transition: all 0.2s ease;
+}
+.payment-main {
+    display: flex;
+    align-items: center;
+    padding: 12px;
+    cursor: pointer;
+}
+.payment-main input[type="radio"] {
+    margin-right: 12px;
+    accent-color: #ff69b4;
+}
+.payment-icon {
+    font-size: 20px;
+    margin-right: 12px;
+}
+.payment-details {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+}
+.payment-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: #333;
+}
+.payment-desc {
+    font-size: 11px;
+    color: #888;
+}
+
+/* Sub Pilihan */
+.payment-sub-options {
+    display: none;
+    background: #fbfbfb;
+    padding: 10px 15px 15px 45px;
+    border-top: 1px dashed #eee;
+    flex-direction: column;
+    gap: 8px;
+}
+.sub-option {
+    display: flex;
+    align-items: center;
+    padding: 10px 12px;
+    border: 1px solid #e0e0e0;
+    border-radius: 6px;
+    background: white;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 500;
+}
+.sub-option input[type="radio"] {
+    margin-right: 10px;
+    accent-color: #ff69b4;
+}
+.sub-text-container {
+    display: flex;
+    flex-direction: column;
+}
+.sub-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: #333;
+}
+.sub-desc-kode {
+    font-size: 11px;
+    color: #ff69b4;
+    font-weight: 500;
+    margin-top: 2px;
+}
+.sub-badge {
+    background: #eee;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 10px;
+    font-weight: bold;
+    margin-left: auto;
+    color: #666;
+}
+
+/* Info Kode / VA Box Utama */
+.info-kode-box {
+    margin-top: 8px;
+    padding: 12px;
+    background: #fff0f6;
+    border: 1px dashed #ff69b4;
+    border-radius: 6px;
+    text-align: center;
+}
+.info-kode-flex {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    margin-top: 6px;
+}
+.kode-tampil {
+    font-weight: 700;
+    color: #ff69b4;
+    font-size: 16px;
+    letter-spacing: 1px;
+}
+.btn-salin {
+    background: #ff69b4;
+    color: white;
+    border: none;
+    padding: 4px 10px;
+    font-size: 11px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+}
+.btn-salin:hover {
+    background: #ff45a4;
+}
+
+/* Efek Aktif / Terpilih */
+.payment-option-container.selected {
+    border-color: #ff69b4;
+}
+.payment-option-container.selected .payment-main {
+    background-color: #fff5f8;
+}
+.sub-option.selected-sub {
+    border-color: #ff69b4;
+    background-color: #fff5f8;
+}
+.sub-option.selected-sub .sub-title {
+    color: #ff69b4;
+}
+.sub-option.selected-sub .sub-badge {
+    background: #ff69b4;
+    color: white;
+}
+
+/* Footer Tetap Di Bawah */
+.cart-footer {
+    background: white;
+    border-top: 1px solid #eee;
+    padding: 20px;
+}
+.total-box {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-weight: bold;
+    font-size: 14px;
+    margin-bottom: 5px;
+}
+.btn-pay {
+    width: 100%;
+    padding: 14px;
+    background: #ff69b4;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.2s;
+    margin-top: 10px;
+}
+.btn-pay:hover {
+    background: #ff45a4;
+}
+</style>
 </head>
 
 <body>
 
-<!-- ================= LOADER ================= -->
 <div id="loader">
     <div class="loader-box">
         <div class="spinner"></div>
@@ -60,119 +391,647 @@
     </div>
 </div>
 
-<!-- PARALLAX -->
 <div class="parallax"></div>
 
-<!-- NAVBAR -->
 <header class="navbar">
     <div class="logo">
-        <img src="logo.jpg">
+        <img src="logo.jpg" alt="Logo">
         <h2>BeadStrap.Co</h2>
     </div>
-
     <nav id="nav">
         <a href="index.html">Home</a>
         <a href="produk.html">Produk</a>
-        <a href="tentang.html">Tentang</a>
         <a href="kontak.html">Kontak</a>
-        <!-- AUTO JS -->
     </nav>
 </header>
 
-<!-- HERO -->
 <section class="hero">
     <h1>Selamat Datang di BeadStrapCo 💖</h1>
     <p class="subtitle">Toko gelang handmade aesthetic ✨</p>
     <a href="produk.html" class="btn">Lihat Produk</a>
 </section>
 
-<!-- PRODUK -->
-<section class="produk">
-    <h2>Produk Terbaru</h2>
-
-    <div class="grid">
-        <div class="card">
-            <img src="WhatsApp Image 2026-05-06 at 21.16.41.jpeg">
-            <h3>Phone Strap Pink Flower</h3>
-            <p>Rp15.000</p>
-            <a href="detail.html?nama=Phone Strap Pink Flower&harga=15000&img=WhatsApp Image 2026-05-05 at 00.11.49.jpeg" class="btn">Detail</a>
+<div id="cart-sidebar" class="cart-sidebar">
+    <div class="cart-header">
+        <h3>Checkout Pesanan 🛒</h3>
+        <span class="close-cart" onclick="toggleKeranjang()">&times;</span>
+    </div>
+    
+    <div class="cart-body-scroll">
+        <div class="shopee-card">
+            <button class="btn-kosongkan-cart" id="btn-kosongkan" onclick="kosongkanKeranjangTotal()">Kosongkan</button>
+            <h4>📦 Rincian Produk</h4>
+            <div id="cart-list-container"></div>
         </div>
 
-        <div class="card">
-            <img src="WhatsApp Image 2026-05-06 at 21.16.40.jpeg">
-            <h3>Gelang Bear Cute</h3>
-            <p>Rp8.000</p>
-            <a href="detail.html?nama=Gelang Bear Cute&harga=8000&img=WhatsApp Image 2026-05-05 at 00.11.46.jpeg" class="btn">Detail</a>
+        <div id="section-alamat" class="shopee-card" style="display: none;">
+            <h4>📍 Alamat Pengiriman</h4>
+            <div class="form-group">
+                <input type="text" id="pembeli-nama" placeholder="Nama Lengkap Penerima">
+            </div>
+            <div class="form-group">
+                <input type="tel" id="pembeli-hp" placeholder="Nomor HP / WhatsApp">
+            </div>
+            <div class="form-group">
+                <select id="pembeli-wilayah" onchange="perbaruiWilayahDanPeta()">
+                    <option value="" disabled selected>-- Pilih Kabupaten/Kota --</option>
+                    <option value="mataram">Kota Mataram (Gratis Ongkir 🎉)</option>
+                    <option value="lombok_barat">Kab. Lombok Barat (Rp10.000)</option>
+                    <option value="lombok_tengah">Kab. Lombok Tengah (Rp15.000)</option>
+                    <option value="lombok_timur">Kab. Lombok Timur (Rp20.000)</option>
+                    <option value="lombok_utara">Kab. Lombok Utara (Rp18.000)</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <input type="text" id="pembeli-kecamatan" placeholder="Ketik Kecamatan Anda (Contoh: Narmada)">
+            </div>
+            
+            <div class="form-group">
+                <input type="text" id="pembeli-desa" placeholder="Ketik Desa / Kelurahan / Dusun (Contoh: Nyur Lembang)">
+            </div>
+
+            <div class="form-group">
+                <textarea id="pembeli-alamat" placeholder="Ketik nomor rumah, nama gang, jalan, atau patokan dekat rumah..."></textarea>
+            </div>
+
+            <div id="map-container"></div>
+            <small class="map-hint">*Petunjuk: Peta mendeteksi otomatis berdasarkan nama Desa & Kecamatan di atas. Jika kurang pas, pembeli dapat menggeser pin merah secara manual tepat ke atap rumah mereka.</small>
+        </div>
+
+        <div id="section-pembayaran" class="shopee-card" style="display: none;">
+            <h4>💳 Metode Pembayaran</h4>
+            <div class="payment-options">
+                
+                <div class="payment-option-container" id="container-cod">
+                    <div class="payment-main" onclick="pilihKategoriUtama('cod')">
+                        <input type="radio" name="main_payment" value="cod" id="radio-cod">
+                        <span class="payment-icon">💵</span>
+                        <div class="payment-details">
+                            <span class="payment-title">COD (Bayar di Tempat)</span>
+                            <span class="payment-desc">Bayar tunai ke kurir saat barang sampai</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="payment-option-container" id="container-ewallet">
+                    <div class="payment-main" onclick="pilihKategoriUtama('ewallet')">
+                        <input type="radio" name="main_payment" value="ewallet" id="radio-ewallet">
+                        <span class="payment-icon">📱</span>
+                        <div class="payment-details">
+                            <span class="payment-title">E-Wallet / QRIS</span>
+                            <span class="payment-desc">Pilih aplikasi pembayaran e-wallet digitalmu</span>
+                        </div>
+                    </div>
+                    <div class="payment-sub-options" id="sub-ewallet">
+                        <div class="sub-option" onclick="pilihSubSpesifik(this, 'ShopeePay')">
+                            <input type="radio" name="detail_payment">
+                            <div class="sub-text-container"><span class="sub-title">ShopeePay</span></div>
+                            <span class="sub-badge" style="color:#ff5722; background:#fff1ec;">POPULER</span>
+                        </div>
+                        <div class="sub-option" onclick="pilihSubSpesifik(this, 'GoPay')">
+                            <input type="radio" name="detail_payment">
+                            <div class="sub-text-container"><span class="sub-title">GoPay</span></div>
+                        </div>
+                        <div class="sub-option" onclick="pilihSubSpesifik(this, 'OVO')">
+                            <input type="radio" name="detail_payment">
+                            <div class="sub-text-container"><span class="sub-title">OVO</span></div>
+                        </div>
+                        <div class="sub-option" onclick="pilihSubSpesifik(this, 'DANA')">
+                            <input type="radio" name="detail_payment">
+                            <div class="sub-text-container"><span class="sub-title">DANA</span></div>
+                        </div>
+                        <div id="form-input-ewallet" class="form-group" style="display: none; margin-top: 10px;">
+                            <label id="label-ewallet" style="font-size: 11px; font-weight: bold; color: #ff69b4; display:block; margin-bottom:4px;">Nomor Akun:</label>
+                            <input type="tel" id="nomor-ewallet" placeholder="Contoh: 08xxxxxxxxxx" style="background: #fff; border: 1px solid #ff69b4;">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="payment-option-container" id="container-va">
+                    <div class="payment-main" onclick="pilihKategoriUtama('va')">
+                        <input type="radio" name="main_payment" value="va" id="radio-va">
+                        <span class="payment-icon">🏦</span>
+                        <div class="payment-details">
+                            <span class="payment-title">Transfer Virtual Account</span>
+                            <span class="payment-desc">Pilih bank transfer (Dicek otomatis)</span>
+                        </div>
+                    </div>
+                    <div class="payment-sub-options" id="sub-va">
+                        <div class="sub-option" onclick="pilihSubSpesifik(this, 'BCA Virtual Account', '3901')">
+                            <input type="radio" name="detail_payment">
+                            <div class="sub-text-container">
+                                <span class="sub-title">BCA Virtual Account</span>
+                                <span class="sub-desc-kode">VA Kode: 3901 + No. HP</span>
+                            </div>
+                        </div>
+                        <div class="sub-option" onclick="pilihSubSpesifik(this, 'Mandiri Virtual Account', '89508')">
+                            <input type="radio" name="detail_payment">
+                            <div class="sub-text-container">
+                                <span class="sub-title">Mandiri Virtual Account</span>
+                                <span class="sub-desc-kode">VA Kode: 89508 + No. HP</span>
+                            </div>
+                        </div>
+                        <div class="sub-option" onclick="pilihSubSpesifik(this, 'BRI Virtual Account', '88810')">
+                            <input type="radio" name="detail_payment">
+                            <div class="sub-text-container">
+                                <span class="sub-title">BRI Virtual Account</span>
+                                <span class="sub-desc-kode">VA Kode: 88810 + No. HP</span>
+                            </div>
+                        </div>
+                        <div class="sub-option" onclick="pilihSubSpesifik(this, 'BNI Virtual Account', '8810')">
+                            <input type="radio" name="detail_payment">
+                            <div class="sub-text-container">
+                                <span class="sub-title">BNI Virtual Account</span>
+                                <span class="sub-desc-kode">VA Kode: 8810 + No. HP</span>
+                            </div>
+                        </div>
+                        <div id="form-input-va" class="info-kode-box" style="display: none;">
+                            <label style="font-size: 12px; font-weight: bold; color: #333; display:block;">Salin Nomor Virtual Account:</label>
+                            <div class="info-kode-flex">
+                                <span id="nomor-va-tampil" class="kode-tampil">-</span>
+                                <button type="button" class="btn-salin" onclick="salinKodePembayaran('nomor-va-tampil')">Salin VA</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="payment-option-container" id="container-retail">
+                    <div class="payment-main" onclick="pilihKategoriUtama('retail')">
+                        <input type="radio" name="main_payment" value="retail" id="radio-retail">
+                        <span class="payment-icon">🏪</span>
+                        <div class="payment-details">
+                            <span class="payment-title">Gerai Tunai Retail</span>
+                            <span class="payment-desc">Bayar lewat kasir minimarket terdekat</span>
+                        </div>
+                    </div>
+                    <div class="payment-sub-options" id="sub-retail">
+                        <div class="sub-option" onclick="pilihSubSpesifik(this, 'Alfamart', 'ALFA')">
+                            <input type="radio" name="detail_payment">
+                            <div class="sub-text-container">
+                                <span class="sub-title">Alfamart / Alfamidi</span>
+                                <span class="sub-desc-kode">Kode Bayar: ALFA + Angka</span>
+                            </div>
+                        </div>
+                        <div class="sub-option" onclick="pilihSubSpesifik(this, 'Indomaret', 'INDO')">
+                            <input type="radio" name="detail_payment">
+                            <div class="sub-text-container">
+                                <span class="sub-title">Indomaret</span>
+                                <span class="sub-desc-kode">Kode Bayar: INDO + Angka</span>
+                            </div>
+                        </div>
+                        <div id="form-input-retail" class="info-kode-box" style="display: none;">
+                            <label style="font-size: 12px; font-weight: bold; color: #333; display:block;">Salin Kode Pembayaran Kasir:</label>
+                            <div class="info-kode-flex">
+                                <span id="kode-retail-tampil" class="kode-tampil">-</span>
+                                <button type="button" class="btn-salin" onclick="salinKodePembayaran('kode-retail-tampil')">Salin Kode</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
         </div>
     </div>
-</section>
 
-<!-- FOOTER -->
+    <div class="cart-footer">
+        <div class="total-box">
+            <span>Subtotal Produk:</span>
+            <span id="subtotal-produk">Rp0</span>
+        </div>
+        <div class="total-box">
+            <span>Ongkos Kirim:</span>
+            <span id="ongkos-kirim">Rp0</span>
+        </div>
+        <div class="total-box" style="border-top: 1px dashed #ddd; padding-top: 5px; margin-top: 5px; font-size: 16px;">
+            <span>Total Pembayaran:</span>
+            <span id="grand-total" style="color: #ff69b4; font-size: 18px; font-weight: 700;">Rp0</span>
+        </div>
+        <button class="btn-pay" onclick="prosesBayarDiWeb()">Buat Pesanan 💳</button>
+    </div>
+</div>
+
 <footer>
     <p>© 2026 BeadStrapCo 💕</p>
 </footer>
 
-<!-- ================= SCRIPT ================= -->
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
 <script>
-
-// LOADER
-window.addEventListener("load", ()=>{
-    document.getElementById("loader").style.display = "none";
+// =========================================================================
+// LOADER & PARALLAX ENGINE
+// =========================================================================
+window.addEventListener("load", () => { 
+    document.getElementById("loader").style.display = "none"; 
 });
 
-// PARALLAX
-document.addEventListener("mousemove",(e)=>{
-    let x=(e.clientX/window.innerWidth-0.5)*30;
-    let y=(e.clientY/window.innerHeight-0.5)*30;
-    document.querySelector(".parallax").style.transform =
-        `translate(${x}px, ${y}px)`;
+document.addEventListener("mousemove", (e) => {
+    let x = (e.clientX / window.innerWidth - 0.5) * 30;
+    let y = (e.clientY / window.innerHeight - 0.5) * 30;
+    let parallaxElem = document.querySelector(".parallax");
+    if (parallaxElem) { parallaxElem.style.transform = `translate(${x}px, ${y}px)`; }
 });
 
-// ================= LOGIN NAVBAR DROPDOWN =================
+// =========================================================================
+// NAVBAR DROPDOWN & MANAGEMENT USER
+// =========================================================================
 let user = localStorage.getItem("user");
 let nav = document.getElementById("nav");
-
-// isi navbar tambahan
-let extra = "";
-
-// keranjang
-extra += `
-<a href="keranjang.html">
- 🛒 <span id="count" class="badge">0</span>
-</a>`;
-
-// kalau login
-if(user){
-    extra += `
-    <div class="akun-dropdown">
-        <button class="akun-btn">👤 ${user} ▼</button>
-        <div class="akun-menu">
-            <a href="dashboard.html">Akun Saya</a>
-            <a href="#" onclick="logout()">Logout</a>
-        </div>
-    </div>
-    `;
+let extra = `<a href="#" onclick="toggleKeranjang(); return false;" style="position:relative;">🛒 <span id="count" class="badge" style="background:#ff69b4; color:white; border-radius:50%; padding:2px 6px; font-size:12px; position:absolute; top:-10px; right:-10px;">0</span></a>`;
+if (user) {
+    extra += `<div class="akun-dropdown"><button class="akun-btn">👤 ${user} ▼</button><div class="akun-menu"><a href="dashboard.html">Akun Saya</a><a href="#" onclick="logout()">Logout</a></div></div>`;
+} else { 
+    extra += `<a href="login.html">Login 👤</a>`; 
 }
-else{
-    extra += `<a href="login.html">Login 👤</a>`;
-}
-
-// inject
 nav.innerHTML += extra;
 
-// logout
-function logout(){
-    localStorage.removeItem("user");
-    location.reload();
+function logout() { 
+    localStorage.removeItem("user"); 
+    location.reload(); 
 }
 
-// ================= KERANJANG =================
+// =========================================================================
+// SISTEM KOORDINAT LOMBOK, MAPS, DAN DATABASE ONGKIR
+// =========================================================================
 let cart = JSON.parse(localStorage.getItem("cart")) || [];
-let total = 0;
-cart.forEach(i => total += i.jumlah);
+let metodeKategoriUtama = ""; 
+let metodeSpesifikTerpilih = ""; 
+let kodePembayaranTerbuat = ""; 
 
-document.getElementById("count").innerText = total;
+const dataWilayahLombok = {
+    "mataram": { nama: "Kota Mataram", ongkir: 0, lat: -8.5833, lng: 116.1167, zoom: 13 },
+    "lombok_barat": { nama: "Lombok Barat", ongkir: 10000, lat: -8.6833, lng: 116.1167, zoom: 11 },
+    "lombok_tengah": { nama: "Lombok Tengah", ongkir: 15000, lat: -8.7000, lng: 116.3000, zoom: 11 },
+    "lombok_timur": { nama: "Lombok Timur", ongkir: 20000, lat: -8.6500, lng: 116.5333, zoom: 11 },
+    "lombok_utara": { nama: "Lombok Utara", ongkir: 18000, lat: -8.3500, lng: 116.3333, zoom: 11 }
+};
 
+let map;
+let marker;
+let timeoutPencarianAlamat; 
+
+function initMap() {
+    if (!map) {
+        map = L.map('map-container').setView([-8.6500, 116.3333], 10);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '© OpenStreetMap contributors'
+        }).addTo(map);
+        marker = L.marker([-8.6500, 116.3333], { draggable: true }).addTo(map); 
+    }
+}
+
+function toggleKeranjang() {
+    const sidebar = document.getElementById('cart-sidebar');
+    sidebar.classList.toggle('active');
+    updateTampilanKeranjang();
+    
+    if (sidebar.classList.contains('active')) {
+        setTimeout(() => {
+            initMap();
+            map.invalidateSize(); 
+        }, 350);
+    }
+}
+
+function perbaruiWilayahDanPeta() {
+    let pilihan = document.getElementById("pembeli-wilayah").value;
+    if (pilihan && dataWilayahLombok[pilihan]) {
+        let lokasi = dataWilayahLombok[pilihan];
+        
+        initMap();
+        map.invalidateSize();
+        
+        map.setView([lokasi.lat, lokasi.lng], lokasi.zoom);
+        marker.setLatLng([lokasi.lat, lokasi.lng]);
+        marker.bindPopup(`<b>Pusat Wilayah: ${lokasi.nama}</b><br>Silakan isi Kecamatan & Desa Anda agar pin peta otomatis mencari jalan rumah Anda.`).openPopup();
+    }
+    updateTampilanKeranjang();
+    lacakAlamatDesaOtomatis();
+}
+
+// BARU & JAUH LEBIH DETAIL: Cerdas Menyusun Query Struktur agar Terbaca Hingga Level Desa/Kelurahan
+function lacakAlamatDesaOtomatis() {
+    let kabupatenTerpilih = document.getElementById("pembeli-wilayah").value;
+    let kecamatan = document.getElementById("pembeli-kecamatan").value.trim();
+    let desa = document.getElementById("pembeli-desa").value.trim();
+    let detailJalan = document.getElementById("pembeli-alamat").value.trim();
+
+    // Jalankan pencarian jika minimal nama kecamatan sudah diisi
+    if (kecamatan.length < 3) return;
+
+    clearTimeout(timeoutPencarianAlamat);
+    timeoutPencarianAlamat = setTimeout(() => {
+        
+        // FORMULA UTAMA: Menyusun alamat terstruktur dari terkecil ke terbesar agar dipahami server Geocoding OSM
+        let queryPencarian = "";
+        
+        if (desa.length > 2) {
+            queryPencarian += desa + ", ";
+        }
+        
+        queryPencarian += kecamatan;
+
+        if (kabupatenTerpilih && dataWilayahLombok[kabupatenTerpilih]) {
+            queryPencarian += ", " + dataWilayahLombok[kabupatenTerpilih].nama;
+        }
+        
+        queryPencarian += ", Lombok, Nusa Tenggara Barat, Indonesia";
+
+        // Eksekusi pencarian titik koordinat desa secara real-time
+        fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(queryPencarian)}&limit=1`)
+            .then(response => response.json())
+            .then(data => {
+                if (data && data.length > 0) {
+                    let lat = parseFloat(data[0].lat);
+                    let lon = parseFloat(data[0].lon);
+                    
+                    initMap();
+                    map.invalidateSize();
+                    
+                    // Kunci kamera peta ke titik desa pembeli dengan keakuratan tinggi (Zoom 15)
+                    map.setView([lat, lon], 15); 
+                    marker.setLatLng([lat, lon]);
+                    
+                    let popupTeks = `📍 <b>Desa/Kecamatan Ditemukan:</b><br>`;
+                    if(desa) popupTeks += `Desa: ${desa}<br>`;
+                    popupTeks += `Kec: ${kecamatan}`;
+                    marker.bindPopup(popupTeks).openPopup();
+                } else {
+                    // JIKA GAGAL (karena pengetikan nama desa salah), pakai metode cadangan: deteksi Kecamatannya saja
+                    fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(kecamatan + ", Lombok, NTB")}&limit=1`)
+                        .then(res => res.json())
+                        .then(fallback => {
+                            if (fallback && fallback.length > 0) {
+                                let fLat = parseFloat(fallback[0].lat);
+                                let fLon = parseFloat(fallback[0].lon);
+                                map.setView([fLat, fLon], 13);
+                                marker.setLatLng([fLat, fLon]);
+                                marker.bindPopup(`📍 <b>Kecamatan Terdeteksi:</b><br>${kecamatan}<br><small>(Ketik nama desa dengan benar agar lebih presisi)</small>`).openPopup();
+                            }
+                        });
+                }
+            })
+            .catch(err => console.log("Gagal memetakan lokasi administratif desa:", err));
+
+    }, 800); // Trigger otomatis berjalan 0.8 detik setelah user berhenti mengetik
+}
+
+// Daftarkan fungsi pelacakan pintar ke kolom-kolom terkait
+document.getElementById("pembeli-kecamatan").addEventListener("input", lacakAlamatDesaOtomatis);
+document.getElementById("pembeli-desa").addEventListener("input", lacakAlamatDesaOtomatis);
+document.getElementById("pembeli-alamat").addEventListener("input", lacakAlamatDesaOtomatis);
+
+
+// =========================================================================
+// OPERASIONAL MANIPULASI KERANJANG & CHECKOUT
+// =========================================================================
+function tambahKeKeranjang(nama, harga) {
+    let existingItem = cart.find(item => item.nama === nama);
+    if (existingItem) { existingItem.jumlah += 1; } 
+    else { cart.push({ nama: nama, harga: harga, jumlah: 1 }); }
+    localStorage.setItem("cart", JSON.stringify(cart));
+    updateTampilanKeranjang();
+    document.getElementById('cart-sidebar').classList.add('active');
+    setTimeout(() => { initMap(); map.invalidateSize(); }, 350);
+}
+
+function hapusItemDariKeranjang(namaBarang) {
+    cart = cart.filter(item => item.nama !== namaBarang);
+    localStorage.setItem("cart", JSON.stringify(cart));
+    updateTampilanKeranjang();
+}
+
+function kosongkanKeranjangTotal() {
+    if(confirm("Apakah Anda yakin ingin mengosongkan seluruh isi keranjang belanja? 🛒")) {
+        cart = [];
+        localStorage.removeItem("cart");
+        metodeKategoriUtama = ""; metodeSpesifikTerpilih = ""; kodePembayaranTerbuat = "";
+        document.getElementById("pembeli-wilayah").value = "";
+        document.querySelectorAll('.payment-option-container').forEach(item => item.classList.remove('selected'));
+        document.querySelectorAll('.payment-sub-options').forEach(sub => sub.style.display = 'none');
+        updateTampilanKeranjang();
+    }
+}
+
+function buatAngkaAcak(panjang) {
+    let hasil = '';
+    for (let i = 0; i < panjang; i++) { hasil += Math.floor(Math.random() * 10); }
+    return hasil;
+}
+
+function salinKodePembayaran(idElemen) {
+    let teks = document.getElementById(idElemen).innerText;
+    navigator.clipboard.writeText(teks).then(() => { alert("Kode pembayaran berhasil disalin! 📋"); });
+}
+
+function pilihKategoriUtama(kategori) {
+    metodeKategoriUtama = kategori;
+    document.querySelectorAll('.payment-option-container').forEach(item => item.classList.remove('selected'));
+    document.querySelectorAll('.payment-sub-options').forEach(sub => sub.style.display = 'none');
+    document.querySelectorAll('.sub-option').forEach(subOpt => {
+        subOpt.classList.remove('selected-sub');
+        let radio = subOpt.querySelector('input[type="radio"]');
+        if(radio) radio.checked = false;
+    });
+
+    document.getElementById('form-input-ewallet').style.display = 'none';
+    document.getElementById('form-input-va').style.display = 'none';
+    document.getElementById('form-input-retail').style.display = 'none';
+    document.getElementById('nomor-ewallet').value = '';
+    kodePembayaranTerbuat = "";
+
+    if(kategori === 'cod') {
+        document.getElementById('container-cod').classList.add('selected');
+        document.getElementById('radio-cod').checked = true;
+        metodeSpesifikTerpilih = "COD (Bayar di Tempat)"; 
+    } else {
+        metodeSpesifikTerpilih = ""; 
+        if(kategori === 'ewallet') {
+            document.getElementById('container-ewallet').classList.add('selected');
+            document.getElementById('radio-ewallet').checked = true;
+            document.getElementById('sub-ewallet').style.display = 'flex';
+        } else if(kategori === 'va') {
+            document.getElementById('container-va').classList.add('selected');
+            document.getElementById('radio-va').checked = true;
+            document.getElementById('sub-va').style.display = 'flex';
+        } else if(kategori === 'retail') {
+            document.getElementById('container-retail').classList.add('selected');
+            document.getElementById('radio-retail').checked = true;
+            document.getElementById('sub-retail').style.display = 'flex';
+        }
+    }
+}
+
+function pilihSubSpesifik(element, namaMetode, prefiksKode) {
+    document.querySelectorAll('#sub-ewallet .sub-option, #sub-va .sub-option, #sub-retail .sub-option').forEach(subOpt => {
+        subOpt.classList.remove('selected-sub');
+        let radio = subOpt.querySelector('input[type="radio"]');
+        if(radio) radio.checked = false;
+    });
+
+    element.classList.add('selected-sub');
+    element.querySelector('input[type="radio"]').checked = true;
+    metodeSpesifikTerpilih = namaMetode;
+
+    if(metodeKategoriUtama === 'ewallet') {
+        const formInput = document.getElementById('form-input-ewallet');
+        const labelEwallet = document.getElementById('label-ewallet');
+        const inputEwallet = document.getElementById('nomor-ewallet');
+        formInput.style.display = 'block';
+        labelEwallet.innerText = `Masukkan Nomor ${namaMetode} Anda:`;
+        inputEwallet.placeholder = `Contoh nomor ${namaMetode} (08xxxxxxxx)`;
+        inputEwallet.focus();
+    } else if(metodeKategoriUtama === 'va') {
+        kodePembayaranTerbuat = prefiksKode + buatAngkaAcak(8);
+        document.getElementById('nomor-va-tampil').innerText = kodePembayaranTerbuat;
+        document.getElementById('form-input-va').style.display = 'block';
+    } else if(metodeKategoriUtama === 'retail') {
+        kodePembayaranTerbuat = prefiksKode + buatAngkaAcak(8);
+        document.getElementById('kode-retail-tampil').innerText = kodePembayaranTerbuat;
+        document.getElementById('form-input-retail').style.display = 'block';
+    }
+}
+
+function updateTampilanKeranjang() {
+    let totalBarang = 0; let subtotalProduk = 0;
+    const container = document.getElementById("cart-list-container");
+    const sectionAlamat = document.getElementById("section-alamat");
+    const sectionPembayaran = document.getElementById("section-pembayaran");
+    const btnKosongkan = document.getElementById("btn-kosongkan");
+    
+    cart.forEach(item => totalBarang += item.jumlah);
+    document.getElementById("count").innerText = totalBarang;
+
+    if (cart.length === 0) {
+        container.innerHTML = "<p style='text-align:center; color:#888; padding:10px; margin:0;'>Keranjang belanja kosong.</p>";
+        document.getElementById("subtotal-produk").innerText = "Rp0";
+        document.getElementById("ongkos-kirim").innerText = "Rp0";
+        document.getElementById("grand-total").innerText = "Rp0";
+        sectionAlamat.style.display = "none"; sectionPembayaran.style.display = "none";
+        if(btnKosongkan) btnKosongkan.style.display = "none";
+        return;
+    }
+
+    sectionAlamat.style.display = "block"; sectionPembayaran.style.display = "block";
+    if(btnKosongkan) btnKosongkan.style.display = "block";
+    container.innerHTML = "";
+    
+    cart.forEach(item => {
+        let subTotalItem = item.harga * item.jumlah;
+        subtotalProduk += subTotalItem;
+        container.innerHTML += `
+            <div class="cart-item">
+                <div class="item-info">
+                    <h4 style="font-size:13px; font-weight:600; margin:0;">${item.nama}</h4>
+                    <small style="color:#ff69b4;">Rp${item.harga.toLocaleString('id-ID')} x ${item.jumlah}</small>
+                </div>
+                <div class="cart-item-right">
+                    <div style="font-weight:600; font-size:13px;">Rp${subTotalItem.toLocaleString('id-ID')}</div>
+                    <button class="btn-hapus-item" onclick="hapusItemDariKeranjang('${item.nama}')" title="Hapus Item">🗑️</button>
+                </div>
+            </div>`;
+    });
+
+    let pilihanWilayah = document.getElementById("pembeli-wilayah").value;
+    let ongkir = 0;
+    if (pilihanWilayah && dataWilayahLombok[pilihanWilayah] !== undefined) {
+        ongkir = dataWilayahLombok[pilihanWilayah].ongkir;
+    }
+
+    let grandTotal = subtotalProduk + ongkir;
+    document.getElementById("subtotal-produk").innerText = "Rp" + subtotalProduk.toLocaleString('id-ID');
+    document.getElementById("ongkos-kirim").innerText = (ongkir === 0 && pilihanWilayah === "mataram") ? "Gratis Ongkir 🎉" : "Rp" + ongkir.toLocaleString('id-ID');
+    document.getElementById("grand-total").innerText = "Rp" + grandTotal.toLocaleString('id-ID');
+}
+
+function prosesBayarDiWeb() {
+    if (cart.length === 0) { alert("Keranjang kosong!"); return; }
+    const nama = document.getElementById("pembeli-nama").value.trim();
+    const hp = document.getElementById("pembeli-hp").value.trim();
+    const wilayah = document.getElementById("pembeli-wilayah").value;
+    const kecamatan = document.getElementById("pembeli-kecamatan").value.trim();
+    const desa = document.getElementById("pembeli-desa").value.trim();
+    const alamat = document.getElementById("pembeli-alamat").value.trim();
+
+    if (!nama || !hp || !wilayah || !kecamatan || !desa || !alamat) {
+        alert("⚠️ Mohon lengkapi Alamat Pengiriman (Kecamatan, Desa, dan Detail Rumah wajib diisi)!"); return;
+    }
+    if (!metodeKategoriUtama || !metodeSpesifikTerpilih) {
+        alert("⚠️ Silakan pilih metode pembayaran Anda secara spesifik!"); return;
+    }
+
+    let nomorEwalletValue = "";
+    if (metodeKategoriUtama === 'ewallet') {
+        nomorEwalletValue = document.getElementById('nomor-ewallet').value.trim();
+        if (!nomorEwalletValue) {
+            alert(`⚠️ Mohon isi nomor ${metodeSpesifikTerpilih} Anda terlebih dahulu!`); return;
+        }
+    }
+
+    let subtotalProduk = 0;
+    cart.forEach(item => subtotalProduk += item.harga * item.jumlah);
+    let ongkir = dataWilayahLombok[wilayah].ongkir;
+    let grandTotal = subtotalProduk + ongkir;
+    const orderId = "BS-" + Math.floor(Date.now() / 1000);
+
+    alert("Memproses pesanan aman... Mohon tunggu.");
+    let infoPembayaran = metodeSpesifikTerpilih;
+    if(metodeKategoriUtama === 'ewallet') { infoPembayaran += ` (${nomorEwalletValue})`; } 
+    else if(metodeKategoriUtama === 'va' || metodeKategoriUtama === 'retail') { infoPembayaran += `\nKode/VA: ${kodePembayaranTerbuat}`; }
+
+    let namaWilayahTampil = document.getElementById("pembeli-wilayah").options[document.getElementById("pembeli-wilayah").selectedIndex].text;
+    let konfirmasiBayar = confirm(`🛒 [KONFIRMASI CHECKOUT]\n\nNo. Pesanan: ${orderId}\nTujuan Wilayah: ${namaWilayahTampil}\nPilihan Bayar: ${infoPembayaran}\nTotal Tagihan: Rp${grandTotal.toLocaleString('id-ID')}\n\nApakah Anda ingin memproses pesanan ini sekarang?`);
+    
+    if (konfirmasiBayar) {
+
+        // =========================================================================
+        // ⭐ PROSES BARU: REKAM & KIRIM DATA PESANAN KE LOCALSTORAGE ORDERS (ADMIN) ⭐
+        // =========================================================================
+        let dataPesananBaru = {
+            idPesanan: orderId,
+            tanggal: new Date().toLocaleString('id-ID'),
+            namaPembeli: nama,
+            nomorHp: hp,
+            wilayah: namaWilayahTampil,
+            alamatLengkap: `${desa}, Kec. ${kecamatan}, ${alamat}`,
+            items: cart, // Menyimpan array rincian produk yang dibeli
+            metodeBayar: infoPembayaran.replace(/\n/g, " "), // Bersihkan baris baru untuk tampilan tabel admin
+            totalTagihan: grandTotal,
+            status: "Pending"
+        };
+
+        // Ambil data pesanan lama dari localStorage, jika belum ada buat array kosong []
+        let daftarPesananLama = JSON.parse(localStorage.getItem("orders")) || [];
+        
+        // Masukkan pesanan baru ke baris paling atas (paling awal)
+        daftarPesananLama.unshift(dataPesananBaru);
+        
+        /* === SISIPKAN KODE INI PADA SCRIPT SUKSES CHECKOUT DI INDEX.HTML === */
+
+// 1. Tarik database antrean pesanan yang sudah ada di localStorage
+let currentOrders = JSON.parse(localStorage.getItem("orders")) || [];
+
+// 2. Buat objek pesanan baru dengan format yang sama persis seperti admin.html
+let invoiceBaru = {
+    invoice: "INV-" + Date.now(), // membuat ID unik berbasis timestamp
+    nama: document.getElementById("pembeli-nama").value || "Pelanggan Anonim",
+    nohp: document.getElementById("pembeli-hp").value || "-",
+    total: grandTotal, // Sesuaikan dengan variabel total belanja di index.html Anda
+    status: "Pending" // status bawaan standar awal pesanan masuk
+};
+
+// 3. Masukkan objek baru tersebut ke array database pesanan, lalu simpan kembali
+currentOrders.push(invoiceBaru);
+localStorage.setItem("orders", JSON.stringify(currentOrders));
+
+/* === LANJUTKAN KE KODE BAWAAN RESET FORM & ALERT YANG SUDAH ADA === */
+cart = []; 
+localStorage.removeItem("cart");
+// ... dst.
+    }
+}
+
+updateTampilanKeranjang();
 </script>
 
 </body>

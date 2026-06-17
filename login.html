@@ -2,22 +2,17 @@
 <html lang="id">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Login - BeadStrapCo</title>
-
-<link rel="stylesheet" href="style.css">
-
 <style>
 body{
     margin:0;
     font-family:'Segoe UI',sans-serif;
-    background:linear-gradient(135deg,#ffd6e7,#e0c3fc);
+    background: linear-gradient(135deg,#ffd6e7,#e0c3fc);
     display:flex;
     justify-content:center;
     align-items:center;
     height:100vh;
 }
-
 .login-box{
     background:white;
     padding:40px;
@@ -26,20 +21,15 @@ body{
     box-shadow:0 10px 20px rgba(0,0,0,0.2);
     text-align:center;
 }
-
-.login-box h2{
-    color:#ff69b4;
-    margin-bottom:20px;
-}
-
+.login-box h2{ color:#ff69b4; margin-bottom:20px; }
 input{
     width:100%;
     padding:12px;
     margin:10px 0;
     border-radius:10px;
     border:1px solid #ddd;
+    box-sizing: border-box;
 }
-
 button{
     width:100%;
     padding:12px;
@@ -49,95 +39,68 @@ button{
     color:white;
     font-weight:bold;
     cursor:pointer;
+    transition: 0.2s;
+    margin-top: 10px;
 }
-
-button:hover{
-    transform:scale(1.03);
-}
-
-a{
-    display:block;
-    margin-top:10px;
-    color:#ff69b4;
-    text-decoration:none;
-}
+button:hover{ transform:scale(1.03); }
+a{ display:block; margin-top:15px; color:#ff69b4; text-decoration:none; }
+.info-hint { font-size: 11px; color: #aaa; margin-top: 15px; text-align: left; background: #f9f9f9; padding: 10px; border-radius: 5px; }
 </style>
 </head>
-
 <body>
 
 <div class="login-box">
+    <h2>Login 🔐</h2>
 
-    <h2>Login BeadStrapCo 🔐</h2>
-
-    <input type="text" id="user" placeholder="Username">
-
+    <input type="text" id="user" placeholder="Username" autocomplete="off">
     <input type="password" id="pass" placeholder="Password">
 
-    <button onclick="login()">
-        Masuk
-    </button>
+    <button onclick="login()">Masuk</button>
 
-    <a href="index.html">
-        Kembali ke Home
-    </a>
-
-    <p style="margin-top:15px;font-size:12px;color:#888;">
-        Admin Login:
-        <br>
-        Username: admin
-        <br>
-        Password: admin123
-    </p>
-
+    <a href="index.html">Kembali ke Home</a>
 </div>
 
 <script>
-
 function login(){
+    let usernameInput = document.getElementById("user").value.trim(); // .trim() menghapus spasi tidak sengaja
+    let passwordInput = document.getElementById("pass").value.trim();
 
-    let user = document.getElementById("user").value;
-    let pass = document.getElementById("pass").value;
+    // Cek di console log browser apa yang kamu ketik
+    console.log("Username diketik:", usernameInput);
+    console.log("Password diketik:", passwordInput);
 
-    // LOGIN ADMIN
-    if(user === "admin" && pass === "admin123"){
-
-        localStorage.setItem("admin","true");
-
-        window.location.href = "admin.html";
-
+    if(!usernameInput || !passwordInput){
+        alert("Isi username & password!");
         return;
     }
 
-    // LOGIN USER
-    if(user && pass){
+    // ================= JALUR LOGIN ADMIN =================
+    if (usernameInput === "admin" && passwordInput === "admin123") {
+        
+        // Atur akses admin ke true
+        localStorage.setItem("admin", "true"); 
+        
+        // Intip status apakah sukses masuk ke storage sebelum pindah halaman
+        console.log("Status Admin di LocalStorage:", localStorage.getItem("admin"));
+        
+        alert("Login Admin Berhasil! Menuju ke halaman admin...");
+        window.location.href = "admin.html"; 
+    } 
+    
+    // ================= JALUR LOGIN USER BIASA =================
+    else {
+        localStorage.setItem("user", usernameInput);
+        alert("Login User Berhasil!");
 
-        localStorage.setItem("user",user);
-
-        let redirect =
-        localStorage.getItem("redirectAfterLogin");
-
+        let redirect = localStorage.getItem("redirectAfterLogin");
         if(redirect){
-
             localStorage.removeItem("redirectAfterLogin");
-
             window.location.href = redirect;
-
-        }else{
-
+        } else {
             window.location.href = "index.html";
-
         }
-
-    }else{
-
-        alert("Isi username dan password!");
-
     }
-
 }
-
 </script>
-
 </body>
 </html>

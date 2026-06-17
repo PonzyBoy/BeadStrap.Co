@@ -8,7 +8,6 @@
 
 <body>
 
-<!-- ================= LOADING ================= -->
 <div id="loader">
     <div class="loader-box">
         <div class="spinner"></div>
@@ -16,7 +15,6 @@
     </div>
 </div>
 
-<!-- NAVBAR -->
 <header class="navbar">
     <div class="logo">
         <img src="logo.png">
@@ -25,76 +23,130 @@
     <nav>
         <a href="index.html">Home</a>
         <a href="produk.html">Produk</a>
-        <a href="tentang.html">Tentang</a>
         <a href="kontak.html">Kontak</a>
         <a href="login.html">Login 👤</a>
 
-        <!-- KERANJANG -->
-        <a href="keranjang.html" class="cart">
+        <a href="index.html?openCart=true" class="cart">
             🛒 <span id="count" class="badge">0</span>
         </a>
     </nav>
 </header>
 
-<!-- PRODUK -->
 <section class="produk">
-    <h2>Koleksi Gelang Lucu 💖</h2>
+    <h2>Koleksi Produk Kami 💖</h2>
 
     <div class="grid">
 
         <div class="card">
-            <img src="WhatsApp Image 2026-05-05 at 00.11.49.jpeg">
-            <h3>Phone Strap Pink Flower</h3>
+            <img src="c:\Users\HP\Downloads\phonestrap pastel.png">
+            <h3>PhoneStrap - Sweet Bloom</h3>
             <p>Rp15.000</p>
-            <a href="detail.html?nama=Gantung Iphone Pink Flower&harga=15000&img=WhatsApp Image 2026-05-05 at 00.11.49.jpeg" class="btn">Detail</a>
+            <button onclick="tambahKeKeranjang('PhoneStrap - Sweet Bloom', 15000)" class="btn" style="border:none; width:100%; margin-top:5px; cursor:pointer;">+ Keranjang</button>
+            <a href="detail.html?nama=PhoneStrap - Sweet Bloom&harga=15000&img=c:\Users\HP\Downloads\phonestrap pastel.png" class="btn" style="display:block; text-align:center; margin-top:5px; background:#ddd; color:#333;">Detail</a>
         </div>
 
         <div class="card">
-            <img src="WhatsApp Image 2026-05-05 at 00..jpeg">
-            <h3>Phone Strap Bear Cute</h3>
+            <img src="c:\Users\HP\Downloads\phone strap pastel wishes.png">
+            <h3>PhoneStrap - Pastel Wishes</h3>
             <p>Rp15.000</p>
-            <a href="detail.html?nama=Gantung Iphone Bear Cute&harga=15000&img=WhatsApp Image 2026-05-05 at 00..jpeg" class="btn">Detail</a>
+            <button onclick="tambahKeKeranjang('PhoneStrap - Pastel Wishes', 15000)" class="btn" style="border:none; width:100%; margin-top:5px; cursor:pointer;">+ Keranjang</button>
+            <a href="detail.html?nama=PhoneStrap - Pastel Wishes&harga=15000&img=c:\Users\HP\Downloads\phone strap pastel wishes.png" class="btn" style="display:block; text-align:center; margin-top:5px; background:#ddd; color:#333;">Detail</a>
         </div>
 
         <div class="card">
-            <img src="WhatsApp Image 2026-05-05 at 00.11.46.jpeg">
-            <h3>Gelang Ungu Candy</h3>
+            <img src="c:\Users\HP\Downloads\phone strap starry flutter.png">
+            <h3>PhoneStrap - Starry Flutter</h3>
+            <p>Rp15.000</p>
+            <button onclick="tambahKeKeranjang('PhoneStrap - Starry Flutter', 15000)" class="btn" style="border:none; width:100%; margin-top:5px; cursor:pointer;">+ Keranjang</button>
+            <a href="detail.html?nama=PhoneStarp - Starry Flutter&harga=15000&img=c:\Users\HP\Downloads\phone strap starry flutter.png" class="btn" style="display:block; text-align:center; margin-top:5px; background:#ddd; color:#333;">Detail</a>
+        </div>
+
+        <div class="card">
+            <img src="c:\Users\HP\Downloads\pearl blossom.png">
+            <h3>PhoneStrap - Pearl Blossom</h3>
+            <p>Rp15.000</p>
+            <button onclick="tambahKeKeranjang('PhoneStrap - Pearl Blossom', 15000)" class="btn" style="border:none; width:100%; margin-top:5px; cursor:pointer;">+ Keranjang</button>
+            <a href="detail.html?nama=PhoneStrap - Pearl Blossom&harga=15000&img=c:\Users\HP\Downloads\pearl blossom.png" class="btn" style="display:block; text-align:center; margin-top:5px; background:#ddd; color:#333;">Detail</a>
+        </div>
+
+        <div class="card">
+            <img src="c:\Users\HP\Downloads\sweetheart pearl.png">
+            <h3>PhoneStrap - Sweetheart Pearl</h3>
+            <p>Rp15.000</p>
+            <button onclick="tambahKeKeranjang('PhoneStrap - Sweetheart Pearl', 15000)" class="btn" style="border:none; width:100%; margin-top:5px; cursor:pointer;">+ Keranjang</button>
+            <a href="detail.html?nama=PhoneStrap - Sweetheart Pearl&harga=15000&img=c:\Users\HP\Downloads\sweetheart pearl.png" class="btn" style="display:block; text-align:center; margin-top:5px; background:#ddd; color:#333;">Detail</a>
+        </div>
+
+        <div class="card">
+            <img src="c:\Users\HP\Downloads\pearl whisper.png">
+            <h3>Gelang - Pearl Whisper</h3>
             <p>Rp8.000</p>
-            <a href="detail.html?nama=Gelang Ungu Candy&harga=8000&img=WhatsApp Image 2026-05-05 at 00.11.46.jpeg" class="btn">Detail</a>
+            <button onclick="tambahKeKeranjang('Gelang - Pearl Whisper', 8000)" class="btn" style="border:none; width:100%; margin-top:5px; cursor:pointer;">+ Keranjang</button>
+            <a href="detail.html?nama=Gelang - Pearl Whisper&harga=8000&img=c:\Users\HP\Downloads\pearl whisper.png" class="btn" style="display:block; text-align:center; margin-top:5px; background:#ddd; color:#333;">Detail</a>
         </div>
 
         <div class="card">
-            <img src="WhatsApp Image 2026-05-05 at 00.11.45.jpeg">
-            <h3>Phone Strap Rainbow</h3>
-            <p>Rp15.000</p>
-            <a href="detail.html?nama=Gantung Iphone Rainbow&harga=15000&img=WhatsApp Image 2026-05-05 at 00.11.45.jpeg" class="btn">Detail</a>
+            <img src="c:\Users\HP\Downloads\blue dew.png">
+            <h3>Gelang - Blue Dew</h3>
+            <p>Rp8.000</p>
+            <button onclick="tambahKeKeranjang('Gelang - Blue Dew', 8000)" class="btn" style="border:none; width:100%; margin-top:5px; cursor:pointer;">+ Keranjang</button>
+            <a href="detail.html?nama=Gelang - Blue Dew&harga=8000&img=c:\Users\HP\Downloads\blue dew.png" class="btn" style="display:block; text-align:center; margin-top:5px; background:#ddd; color:#333;">Detail</a>
+        </div>
+
+        <div class="card">
+            <img src="c:\Users\HP\Downloads\mariposa pastel charm.jpeg">
+            <h3>Gelang - Mariposa Pastel Charm</h3>
+            <p>Rp8.000</p>
+            <button onclick="tambahKeKeranjang('Gelang - Mariposa Pastel Charm', 8000)" class="btn" style="border:none; width:100%; margin-top:5px; cursor:pointer;">+ Keranjang</button>
+            <a href="detail.html?nama=Gelang - Mariposa Pastel Charm&harga=8000&img=c:\Users\HP\Downloads\mariposa pastel charm.jpeg" class="btn" style="display:block; text-align:center; margin-top:5px; background:#ddd; color:#333;">Detail</a>
+        </div>
+
+        <div class="card">
+            <img src="c:\Users\HP\Downloads\lavender dreamscape.jpeg">
+            <h3>Gelang - Lavender Dreamscape</h3>
+            <p>Rp8.000</p>
+            <button onclick="tambahKeKeranjang('Gelang - Lavender Dreamscape', 8000)" class="btn" style="border:none; width:100%; margin-top:5px; cursor:pointer;">+ Keranjang</button>
+            <a href="detail.html?nama=Gelang - Lavender Dreamscape&harga=8000&img=c:\Users\HP\Downloads\lavender dreamscape.jpeg" class="btn" style="display:block; text-align:center; margin-top:5px; background:#ddd; color:#333;">Detail</a>
         </div>
 
     </div>
 </section>
 
-<!-- CTA -->
 <section class="cta">
     <h2>Yuk Order Sekarang! 💕</h2>
-    <a href="kontak.html" class="btn">Hubungi Kami</a>
 </section>
 
-<!-- FOOTER -->
 <footer>
     <p>© 2026 BeadStrapCo - Handmade with Love 💖</p>
 </footer>
 
-<!-- ================= SCRIPT BADGE ================= -->
 <script>
 let cart = JSON.parse(localStorage.getItem("cart")) || [];
-let total = 0;
 
-cart.forEach(i => total += i.jumlah);
+// Fungsi untuk memperbarui angka badge di atas ikon keranjang
+function updateBadge() {
+    let total = 0;
+    cart.forEach(i => total += i.jumlah);
+    document.getElementById("count").innerText = total;
+}
 
-document.getElementById("count").innerText = total;
+// Fungsi untuk memasukkan produk ke sistem checkout internal web
+function tambahKeKeranjang(nama, harga) {
+    let existingItem = cart.find(item => item.nama === nama);
+    if (existingItem) { 
+        existingItem.jumlah += 1; 
+    } else { 
+        cart.push({ nama: nama, harga: harga, jumlah: 1 }); 
+    }
+    localStorage.setItem("cart", JSON.stringify(cart));
+    updateBadge();
+    alert(`✨ ${nama} berhasil ditambahkan ke keranjang web!`);
+}
+
+// Jalankan fungsi update badge saat halaman dimuat awal
+updateBadge();
 </script>
 
-<!-- ================= LOADER SCRIPT ================= -->
 <script>
 window.addEventListener("load", function(){
     const loader = document.getElementById("loader");
